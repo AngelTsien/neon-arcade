@@ -18,7 +18,7 @@ async function resolve(my){let m;while(my===gen&&(m=matches()).size){combo++;con
  if(combo>1)anim.push({txt:'连击 x'+combo,x:W/2,y:H/2,l:50});await wait(160);if(my!==gen)return;
  for(let c=0;c<N;c++){let w=N-1;for(let r=N-1;r>=0;r--)if(g[r][c]){const t=g[r][c];g[r][c]=null;g[w][c]=t;t.y=Math.min(t.y,r);w--}for(let r=w;r>=0;r--)g[r][c]={v:rnd(),y:r-w-1,s:1}}
  await wait(260)}}
-function draw(){x.fillStyle='#08081a';x.fillRect(0,0,W,H);x.fillStyle='#9ab';x.font='16px sans-serif';x.fillText('剩余步数 ',10,32);x.fillStyle=moves<=5?'#f36':'#0ff';x.font='bold 24px sans-serif';x.fillText(moves,96,33);x.fillStyle='#9ab';x.font='14px sans-serif';x.textAlign='right';x.fillText('目标 3000 分',W-10,32);x.textAlign='center';
+function draw(){if(!g)return;x.fillStyle='#08081a';x.fillRect(0,0,W,H);x.fillStyle='#9ab';x.font='16px sans-serif';x.fillText('剩余步数 ',10,32);x.fillStyle=moves<=5?'#f36':'#0ff';x.font='bold 24px sans-serif';x.fillText(moves,96,33);x.fillStyle='#9ab';x.font='14px sans-serif';x.textAlign='right';x.fillText('目标 3000 分',W-10,32);x.textAlign='center';
  for(let r=0;r<N;r++)for(let c=0;c<N;c++){x.fillStyle=(r+c)%2?'#ffffff08':'#ffffff04';x.fillRect(c*S,r*S+50,S,S);const t=g[r][c];if(!t)continue;t.y+=(r-t.y)*.3;if(Math.abs(r-t.y)<.01)t.y=r;
   const X=c*S+S/2,Y=t.y*S+S/2+50,isS=sel&&sel[0]===r&&sel[1]===c,pul=isS?1+Math.sin(performance.now()/100)*.08:1;x.save();x.translate(X,Y);x.scale(pul,pul);x.shadowColor=x.fillStyle=COL[t.v];x.shadowBlur=isS?25:12;x.beginPath();x.arc(0,0,S*.38,0,7);x.fill();x.shadowBlur=0;x.fillStyle='#0008';x.font='bold 24px sans-serif';x.fillText(SYM[t.v],0,9);x.restore()}
  if(Hub.active()&&kb){x.strokeStyle='#fff';x.lineWidth=2;x.strokeRect(cur[1]*S+2,cur[0]*S+52,S-4,S-4)}

@@ -1,4 +1,4 @@
-const cv=document.getElementById('c'),x=cv.getContext('2d');let p,W=800,H=400,GY=320;let obs,coins,parts,score,dist,sp,last,spawnT,coinT,bg,jumpHeld=false;
+const cv=document.getElementById('c'),x=cv.getContext('2d');let p,W=800,H=400,GY=320;const STARS=[...Array(70)].map(()=>[Math.random(),Math.random(),Math.random()]);let obs,coins,parts,score,dist,sp,last,spawnT,coinT,bg,jumpHeld=false;
 function fit(){const r=document.getElementById('stage').getBoundingClientRect();const port=r.height>r.width*1.1;const nW=port?520:800,nH=port?Math.min(900,Math.max(520,Math.round(520*r.height/r.width))):400;const nGY=nH-(port?140:80);if(p&&Hub.running&&nGY!==GY){const d=nGY-GY;p.y+=d;obs.forEach(o=>o.y+=d);coins.forEach(c=>c.y+=d)}W=nW;H=nH;GY=nGY;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 bg=[...Array(30)].map((_,i)=>({x:i*40,h:40+Math.random()*120,l:Math.random()<.5}));
 function reset(){p={x:W<600?90:120,y:GY,vy:0,on:true,jumps:0,duck:false};obs=[];coins=[];parts=[];score=0;dist=0;sp=7;spawnT=60;coinT=40;last=performance.now()}
@@ -14,7 +14,7 @@ function update(dt){sp=(7+Math.min(9,dist/1500))*(W<600?.8:1);dist+=sp*dt;const 
 let score_c=0;
 function die(){if(!Hub.running)return;Hub.sfx('boom');for(let i=0;i<40;i++)parts.push({x:p.x,y:p.y-24,vx:(Math.random()-.5)*10,vy:(Math.random()-.5)*10,l:40,c:'#f0f'});Hub.gameOver(score)}
 function draw(t){const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0a0030');g.addColorStop(1,'#300040');x.fillStyle=g;x.fillRect(0,0,W,H);
- x.fillStyle='#ff2d95';x.shadowColor='#ff2d95';x.shadowBlur=40;x.beginPath();x.arc(W*.7,GY-10,80,Math.PI,0);x.fill();x.shadowBlur=0;
+ for(const st of STARS){x.fillStyle='#fff';x.globalAlpha=.3+.5*Math.abs(Math.sin(t/900+st[2]*9));x.fillRect(st[0]*W,st[1]*(GY-60),st[2]*2+.5,st[2]*2+.5)}x.globalAlpha=1;x.fillStyle='#ff2d95';x.shadowColor='#ff2d95';x.shadowBlur=40;x.beginPath();x.arc(W*.7,GY-10,80,Math.PI,0);x.fill();x.shadowBlur=0;
  bg.forEach(b=>{x.fillStyle='#150a35';x.fillRect(b.x,GY-b.h,36,b.h);if(b.l){x.fillStyle='#0ff6';for(let k=10;k<b.h-5;k+=16)x.fillRect(b.x+8,GY-b.h+k,5,5)}});
  x.fillStyle='#0d0420';x.fillRect(0,GY,W,H-GY);x.strokeStyle='#f0f';x.shadowColor='#f0f';x.shadowBlur=12;x.lineWidth=2;x.beginPath();x.moveTo(0,GY);x.lineTo(W,GY);x.stroke();x.shadowBlur=0;
  x.strokeStyle='#f0f4';const off=(dist||0)%40;for(let i=-1;i<22;i++){x.beginPath();x.moveTo(i*40-off,GY);x.lineTo((i*40-off-W/2)*3+W/2,H);x.stroke()}for(let k=1;k<5;k++){const yy=GY+k*k*5;x.beginPath();x.moveTo(0,yy);x.lineTo(W,yy);x.stroke()}
