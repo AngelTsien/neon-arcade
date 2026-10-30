@@ -1,0 +1,31 @@
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#070712;color:#e8f0ff;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+body{background:radial-gradient(ellipse at 20% 0%,#1b1250 0%,transparent 55%),radial-gradient(ellipse at 90% 100%,#062a3a 0%,transparent 55%),#070712}
+.hud{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;gap:8px;padding:0 10px;z-index:20;background:linear-gradient(#0009,#0000)}
+.hud .title{font-weight:800;letter-spacing:2px;background:linear-gradient(90deg,#0ff,#f0f);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:18px;white-space:nowrap}
+.hud .sp{flex:1}
+.stat{font-size:13px;padding:4px 10px;border:1px solid #0ff5;border-radius:20px;background:#0ff1;white-space:nowrap}
+.stat b{color:#0ff;font-size:15px}
+.btn{cursor:pointer;border:1px solid #0ff8;background:#0ff1;color:#dff;border-radius:10px;padding:6px 10px;font-size:14px;font-family:inherit;transition:.2s}
+.btn:hover{background:#0ff3;box-shadow:0 0 12px #0ff8}
+.btn.big{font-size:20px;padding:12px 34px;border-radius:30px;background:linear-gradient(90deg,#00e5ff,#d500f9);color:#fff;border:none;box-shadow:0 0 24px #d500f988;font-weight:700;letter-spacing:3px}
+.btn.big:hover{transform:scale(1.06)}
+.ov{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#070712cc;backdrop-filter:blur(6px);text-align:center;padding:20px}
+.ov.show{display:flex;animation:fi .3s}
+@keyframes fi{from{opacity:0;transform:scale(.96)}to{opacity:1}}
+.ov h1{font-size:clamp(34px,8vw,64px);background:linear-gradient(90deg,#0ff,#f0f,#ff0);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 14px #f0f8)}
+.ov p{color:#9ab;max-width:460px;line-height:1.7;font-size:14px}
+.ov .sc{font-size:22px}.ov .sc b{color:#0ff;font-size:32px}
+.ov .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.newbest{color:#ff0;font-weight:800;animation:pu .6s infinite alternate}
+@keyframes pu{to{transform:scale(1.15);text-shadow:0 0 16px #ff0}}
+#stage{position:fixed;top:52px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center}
+canvas{display:block}
+.pad{position:fixed;bottom:12px;left:0;right:0;display:none;justify-content:space-between;padding:0 14px;z-index:15;pointer-events:none}
+.pad .g{display:flex;gap:10px;pointer-events:auto}
+.pad button{width:62px;height:62px;border-radius:50%;border:2px solid #0ff6;background:#0ff2;color:#fff;font-size:22px;touch-action:none}
+.pad button:active{background:#0ff5}
+@media (pointer:coarse){.pad.on{display:flex}}
+.hud .btn{white-space:nowrap;flex:none}
+@media (max-width:560px){.hud{gap:5px;padding:0 6px}.hud .title{display:none}.hud .btn{padding:5px 8px;font-size:13px}.stat{padding:3px 7px;font-size:12px}.stat b{font-size:13px}}
+@media (pointer:coarse){body:has(.pad.on) #stage{bottom:90px}}

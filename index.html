@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>霓虹游戏厅 · NEON ARCADE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#05050f;color:#e8f0ff;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;overflow-x:hidden}
+#bg{position:fixed;inset:0;z-index:0}
+header{position:relative;z-index:1;text-align:center;padding:48px 16px 18px}
+h1{font-size:clamp(40px,9vw,92px);font-weight:900;letter-spacing:6px;background:linear-gradient(90deg,#00f0ff,#ff00e6,#ffe600,#00f0ff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 6s linear infinite;filter:drop-shadow(0 0 18px #ff00e688)}
+@keyframes hue{to{background-position:300%}}
+.sub{margin-top:8px;color:#8fa3c8;letter-spacing:8px;font-size:14px}
+.sub b{color:#0ff}
+main{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,44vw),1fr));gap:22px;max-width:1200px;margin:20px auto 60px;padding:0 18px}
+.card{position:relative;display:block;text-decoration:none;color:inherit;border-radius:20px;padding:22px 20px 18px;background:linear-gradient(160deg,#ffffff12,#ffffff04);border:1px solid #ffffff1a;backdrop-filter:blur(8px);overflow:hidden;transition:transform .3s,box-shadow .3s;opacity:0;animation:in .6s forwards}
+.card:before{content:"";position:absolute;inset:-2px;border-radius:22px;padding:2px;background:linear-gradient(135deg,var(--c),transparent 50%,var(--c2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
+.card:hover,.card:focus{transform:translateY(-8px) scale(1.03);box-shadow:0 18px 40px -10px var(--c),0 0 30px -5px var(--c2);outline:none}
+@keyframes in{from{opacity:0;transform:translateY(30px)}to{opacity:1}}
+.ic{font-size:54px;filter:drop-shadow(0 0 14px var(--c));transition:transform .4s}
+.card:hover .ic{transform:rotate(-8deg) scale(1.15)}
+.card h2{margin-top:10px;font-size:22px}
+.card p{margin-top:6px;color:#8fa3c8;font-size:13px;line-height:1.6;min-height:42px}
+.meta{margin-top:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.best{color:var(--c)}.tag{padding:3px 10px;border-radius:12px;background:var(--c);color:#000;font-weight:700}
+#filters{position:relative;z-index:1;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 12px}#filters button{font-family:inherit;cursor:pointer;border:1px solid #0ff5;background:#0ff1;color:#cfe;border-radius:20px;padding:6px 14px;font-size:14px;transition:.2s}#filters button.on{background:linear-gradient(90deg,#00e5ff,#d500f9);color:#fff;border-color:transparent;box-shadow:0 0 14px #d500f988}
+.meta .best{font-size:11px}
+footer{position:relative;z-index:1;text-align:center;color:#56658a;font-size:12px;padding-bottom:30px}
+footer button{background:none;border:1px solid #56658a;color:#8fa3c8;border-radius:12px;padding:4px 12px;margin-left:8px;cursor:pointer}
+@media(max-width:520px){header{padding:28px 10px 10px}main{gap:12px;padding:0 10px}.card{padding:14px 12px}.ic{font-size:38px}.card h2{font-size:17px}.card p{font-size:12px;min-height:36px}.meta{flex-direction:column;align-items:flex-start;gap:6px}}</style></head><body><canvas id="bg"></canvas>
+<header><h1>NEON ARCADE</h1><div class="sub">霓虹游戏厅 · <b>20</b> 款离线小游戏</div></header>
+<nav id="filters"></nav><main id="g"></main>
+<footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button></footer>
+<script>
+const T=v=>(v/60|0)+':'+String(v%60).padStart(2,'0');
+const GAMES=[
+['2048','2048','🔢','滑动合并数字，冲击 2048','#00f0ff','#7b2bff','益智'],
+['snake','贪吃蛇','🐍','经典霓虹贪吃蛇，越吃越快','#00ff88','#00b3ff','经典'],
+['tetris','俄罗斯方块','🧱','七种方块，消行连击','#c000ff','#00f0ff','经典'],
+['breakout','打砖块','🏓','多关卡＋道具＋多球','#ff3366','#ffaa00','动作'],
+['minesweeper','扫雷','💣','三种难度，首击安全','#ff00e6','#00f0ff','益智',[['初','mines_easy',v=>v+'s'],['中','mines_mid',v=>v+'s'],['高','mines_hard',v=>v+'s']]],
+['flappy','霓虹飞鸟','🐤','穿越霓虹管道','#ffe600','#ff2d95','休闲'],
+['shooter','星际射击','🚀','弹幕射击，火力升级','#00f0ff','#ff3366','动作'],
+['memory','记忆翻牌','🃏','考验记忆力的 3D 翻牌','#ff9900','#ff00e6','益智'],
+['gomoku','五子棋','⚫','α-β 搜索 AI，三档难度','#00ff88','#ff00e6','棋类'],
+['runner','霓虹跑酷','🏃','二段跳、滑铲、收金币','#ff2d95','#ffe600','动作'],
+['match3','消消乐','💎','三消连锁，30 步冲 3000 分','#ff3366','#ffe600','休闲'],
+['bubble','泡泡龙','🫧','瞄准反弹，同色三连消除','#00f0ff','#c000ff','休闲'],
+['sudoku','数独','🧩','三档难度，笔记与提示','#7b8cff','#00f0ff','益智',[['易','sudoku_easy',T],['中','sudoku_mid',T],['难','sudoku_hard',T]]],
+['pipes','霓虹接管','🔌','旋转管道点亮全图','#00ff88','#ffe600','益智'],
+['towerdef','霓虹塔防','🗼','三种防御塔，Boss 波次','#ff9900','#00f0ff','策略'],
+['reversi','黑白棋','⚪','翻转对决，三档 AI','#00f0ff','#ff00e6','棋类'],
+['pinball','弹珠台','🎱','挡板、弹柱、倍率','#ff00e6','#ffe600','动作'],
+['racer','极速赛车','🏎️','变道超车，氮气加速','#00f0ff','#ff3366','动作'],
+['sokoban','推箱子','📦','8 个精选关卡，可撤销','#ff9900','#00ff88','益智'],
+['whack','打地鼠','🔨','60 秒手速挑战','#ffe600','#ff3366','休闲']];
+const CATS=['全部',...new Set(GAMES.map(g=>g[6]))];let cat='全部';
+const g=document.getElementById('g'),fb=document.getElementById('filters');
+function bestOf(d,keys){if(keys)return keys.map(([l,k,f])=>{const b=+localStorage.getItem('hub_best_'+k)||0;return l+' '+(b?f(b):'—')}).join(' · ');const b=+localStorage.getItem('hub_best_'+d)||0;return b?'最佳 '+b:'尚未挑战'}
+function render(){g.innerHTML='';let i=0;GAMES.forEach(([d,n,ic,desc,c,c2,tag,keys])=>{if(cat!=='全部'&&tag!==cat)return;const a=document.createElement('a');a.className='card';a.href=d+'/index.html';a.style.cssText=`--c:${c};--c2:${c2};animation-delay:${(i++)*.04}s`;
+ a.innerHTML=`<div class="ic">${ic}</div><h2>${n}</h2><p>${desc}</p><div class="meta"><span class="best">${bestOf(d,keys)}</span><span class="tag">${tag}</span></div>`;g.appendChild(a)});
+ fb.innerHTML=CATS.map(k=>`<button class="${k===cat?'on':''}" data-c="${k}">${k} ${k==='全部'?GAMES.length:GAMES.filter(q=>q[6]===k).length}</button>`).join('')}
+fb.onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;sessionStorage.setItem('hub_cat',c);render()}};cat=sessionStorage.getItem('hub_cat')||'全部';if(!CATS.includes(cat))cat='全部';render();
+document.getElementById('clr').onclick=()=>{if(confirm('确定清除所有游戏的最高分记录？')){Object.keys(localStorage).filter(k=>k.startsWith('hub_best_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
+if(window.BUNDLE){document.addEventListener('click',e=>{const a=e.target.closest('.card');if(!a)return;e.preventDefault();const d=a.getAttribute('href').split('/')[0];const html=BUNDLE[d];if(!html)return;const f=document.createElement('iframe');f.id='gf';f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:99;background:#070712';f.setAttribute('allow','autoplay');f.srcdoc=html;document.body.appendChild(f);history.pushState({g:d},'');f.onload=()=>f.contentWindow.focus()});
+ const close=()=>{const f=document.getElementById('gf');if(f){f.remove();location.reload()}};addEventListener('message',e=>{if(e.data==='hub-back'){history.back()}});addEventListener('popstate',close)}
+const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,pts;
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[...Array(Math.min(90,W/14|0))].map(()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4}))}rs();addEventListener('resize',rs);
+(function f(t){requestAnimationFrame(f);x.fillStyle='#05050f';x.fillRect(0,0,W,H);
+ x.strokeStyle='rgba(255,0,230,.12)';const hy=H*.62,o=(t/30)%50;for(let i=0;i<12;i++){const y=hy+Math.pow(i+o/50,2)*6;if(y>H)break;x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}
+ for(let i=-20;i<=20;i++){x.beginPath();x.moveTo(W/2+i*30,hy);x.lineTo(W/2+i*220,H);x.stroke()}
+ pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1});
+ for(let i=0;i<pts.length;i++){const a=pts[i];x.fillStyle='rgba(0,240,255,.6)';x.fillRect(a.x,a.y,2,2);for(let j=i+1;j<pts.length;j++){const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<120){x.strokeStyle=`rgba(0,240,255,${.15*(1-d/120)})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}}})(0);
+</script></body></html>
