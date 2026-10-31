@@ -2,7 +2,7 @@ const cv=document.getElementById('c'),x=cv.getContext('2d'),W=480,H0=640,R=2,HS=
 function fit(){H=Hub.flex(W,H0).H;CY=Math.round(H*.55);Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const PS=new Art.Particles(),FL=new Art.Floaters(),DIR=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
 const CELLS=[];for(let q=-R;q<=R;q++)for(let r=-R;r<=R;r++)if(Math.abs(q+r)<=R)CELLS.push([q,r]);
-const COLS={2:'#7b8cff',4:'#6d7bff',8:'#4dd7ff',16:'#2fd1b0',32:'#4dffc3',64:'#a8ff5c',128:'#ffe23a',256:'#ffb21c',512:'#ff8a3d',1024:'#ff4d6d',2048:'#ff2d95',4096:'#c000ff'};
+const COLS={2:'#f6e3a8',4:'#f2cf6e',8:'#eeb43c',16:'#e39a1e',32:'#d47a14',64:'#c45a10',128:'#b23e1a',256:'#8a2e2a',512:'#6a8a3a',1024:'#3a7a6a',2048:'#2a5a8a',4096:'#5a2a7a'};
 let g,score,last,anim,hist,won,maxv;const K=(q,r)=>q+','+r,inB=(q,r)=>Math.abs(q)<=R&&Math.abs(r)<=R&&Math.abs(q+r)<=R;
 const pos=(q,r)=>[W/2+HS*Math.sqrt(3)*(q+r/2),CY+HS*1.5*r];
 function reset(){g={};score=0;hist=[];won=false;maxv=2;add();add();last=performance.now();Hub.setScore(0)}
@@ -27,7 +27,7 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'he
   const sc=t.born!==undefined&&t.born<1?(t.born+=.1,Art.ease.back(Math.min(1,t.born))):t.pop!==undefined&&t.pop<1?(t.pop+=.08,1+Math.sin(t.pop*Math.PI)*.15):1;const c=COLS[t.v]||'#fff',s=(HS-5)*sc;
   hexPath(X,Y+4,s);x.fillStyle=Art.shade(c,-.45);x.fill();const gr=x.createLinearGradient(X,Y-s,X,Y+s);gr.addColorStop(0,Art.shade(c,.35));gr.addColorStop(1,c);hexPath(X,Y,s);x.fillStyle=gr;x.fill();
   x.save();hexPath(X,Y,s);x.clip();x.fillStyle='rgba(255,255,255,.25)';x.beginPath();x.ellipse(X,Y-s*.55,s*.8,s*.35,0,0,7);x.fill();x.restore();
-  A.text(x,String(t.v),X,Y+2,t.v>=1000?20:t.v>=100?24:28,t.v>=128?'#3a1a00':'#fff',{w:900})}
+  A.text(x,String(t.v),X,Y+2,t.v>=1000?20:t.v>=100?24:28,t.v<=8?'#5a3208':t.v>=256?'#fff7e0':'#fff',{w:900,shadow:t.v>8})}
  const by=CY+HS*R*1.6+60;if(by<H-30)A.text(x,'滑动六个方向合并 · 键盘 Q W E A S D',W/2,by,13,'#9aa3c8',{w:600});PS.draw(x);FL.draw(x)}
 function loop(t){requestAnimationFrame(loop);last=t;draw()}
 Hub.init({id:'hex2048',title:'六边形 2048',help:'在六边形棋盘上滑动，相同数字的方块会合并成两倍。共有六个滑动方向：手机上朝任意斜向滑动即可；键盘 W/S 向上下偏左右请用 Q E A D，或方向键左右。合成 2048 获胜，之后可继续冲击更高分。可撤销。',onStart(){reset()},onResume(){}});

@@ -3,12 +3,12 @@ const cv=document.getElementById('c'),x=cv.getContext('2d'),W=420,H0=720;let H=H
 function fit(){H=Hub.flex(W,H0).H;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const L=Hub.L,PS=new Art.Particles(),FL=new Art.Floaters();
 let b,obs,scroll,last,score,dist,dead,keys={},tx=null,spawnY,spd,trk;
-function reset(){b={x:W/2,r:24,rot:0,sq:1};obs=[];scroll=0;dist=0;score=0;dead=0;spawnY=0;spd=3;trk=[];last=performance.now();Hub.setScore(0)}
+function reset(){b={x:W/2,r:28,rot:0,sq:1};obs=[];scroll=0;dist=0;score=0;dead=0;spawnY=0;spd=3;trk=[];last=performance.now();Hub.setScore(0)}
 function spawn(){const k=Math.random();const X=40+Math.random()*(W-80);
  if(k<.35)obs.push({t:'tree',x:X,y:-40,s:.7+Math.random()*.8});else if(k<.55)obs.push({t:'mud',x:X,y:-40,w:70+Math.random()*80,h:40+Math.random()*40});
- else if(k<.68)obs.push({t:'man',x:X,y:-40,s:1});else if(k<.8){const big=Math.random()<.6;obs.push({t:'gate',y:-40,need:big?Math.round(b.r+2+Math.random()*4):Math.max(14,Math.round(b.r-4)),big})}
+ else if(k<.68)obs.push({t:'man',x:X,y:-40,s:1});else if(k<.8&&dist>900){const big=Math.random()<.6;obs.push({t:'gate',y:-40,need:big?Math.round(b.r+2+Math.random()*4):Math.max(14,Math.round(b.r-4)),big})}
  else obs.push({t:'flake',x:X,y:-40})}
-function update(dt){spd=3+Math.min(4,dist/3000);const mv=spd*dt;scroll+=mv;dist+=mv;spawnY+=mv;if(spawnY>95-Math.min(40,dist/200)){spawnY=0;spawn()}
+function update(dt){spd=2.6+Math.min(4,dist/3500);const mv=spd*dt;scroll+=mv;dist+=mv;spawnY+=mv;if(spawnY>Math.max(60,150-dist/60)){spawnY=0;spawn()}
  let dir=(keys.ArrowLeft||keys.a?-1:0)+(keys.ArrowRight||keys.d?1:0);if(tx!==null)dir=Math.max(-1,Math.min(1,(tx-b.x)/30));b.x=Math.max(b.r,Math.min(W-b.r,b.x+dir*5*dt));
  const by=H*.72;let onMud=false;b.rot+=mv/b.r;b.sq+=(1-b.sq)*.2;
  for(const o of obs){o.y+=mv;if(o.done)continue;
@@ -18,7 +18,7 @@ function update(dt){spd=3+Math.min(4,dist/3000);const mv=spd*dt;scroll+=mv;dist+
   else{const R=o.t==='tree'?14*o.s:16;if(Math.hypot(b.x-o.x,by-o.y)<b.r+R*.8){o.done=1;const need=o.t==='tree'?18*o.s:22;
    if(b.r>=need){score+=o.t==='tree'?20:35;Hub.sfx('hit');Hub.vib(20);b.sq=.75;b.r+=o.t==='man'?3:0;PS.burst(o.x,o.y,o.t==='tree'?['#2f7a4a','#6a4a2a','#fff']:['#fff','#ff8a3d','#333'],22,{speed:4});FL.add(o.t==='man'?L('雪人吞噬！','Snowman absorbed!','Pupazzo inglobato!'):L('咔嚓！','Crunch!','Crac!'),o.x,o.y-30,'#3a5a9a')}
    else{b.r-=8;Hub.sfx('bad');Hub.vib([40,20,40]);PS.burst(b.x,by,['#fff','#cfe3ff'],30,{speed:4});FL.add(L('砰！','Bonk!','Bum!'),b.x,by-40,'#c03040');b.sq=1.4}}}}
- b.r+=(onMud?-.05:.02)*dt;b.r=Math.min(60,b.r);if(onMud&&Math.random()<.3)PS.burst(b.x,by+b.r,['#6a4a2a'],1,{speed:1.5});
+ b.r+=(onMud?-(dist<1500?.03:.05):.022)*dt;b.r=Math.min(60,b.r);if(onMud&&Math.random()<.3)PS.burst(b.x,by+b.r,['#6a4a2a'],1,{speed:1.5});
  trk.push({x:b.x,y:by,r:b.r});trk.forEach(t=>t.y+=mv);trk=trk.filter(t=>t.y<H+20);
  obs=obs.filter(o=>o.y<H+80);Hub.setScore(score+Math.floor(dist/20));
  b.r=Math.max(0,b.r);if(b.r<8&&!dead){dead=1;Hub.sfx('lose');PS.burst(b.x,by,['#fff'],40,{speed:5});Hub.later(700,()=>Hub.gameOver(score+Math.floor(dist/20),L('雪球化了','Your snowball melted','La palla si è sciolta')))}}

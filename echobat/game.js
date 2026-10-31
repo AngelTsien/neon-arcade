@@ -3,13 +3,13 @@ const cv=document.getElementById('c'),x=cv.getContext('2d'),W=420,H0=720;let H=H
 function fit(){H=Hub.flex(W,H0).H;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const L=Hub.L,PS=new Art.Particles(),FL=new Art.Floaters();const SEG=6;
 let bat,cave,off,pings,moths,score,en,last,speed,dist,dead,flapT,lit;
-function genCol(i){const t=i*.035;const gap=Math.max(150,260-i*.02);const mid=H/2+Math.sin(t)*H*.18+Math.sin(t*2.7+1)*H*.08;return{top:mid-gap/2+Math.sin(i*.4)*8,bot:mid+gap/2+Math.sin(i*.33+2)*8,spike:i>40&&Math.random()<.025?(Math.random()<.5?-1:1)*(25+Math.random()*35):0}}
+function genCol(i){const t=i*.035;const gap=Math.max(155,330-i*.06);const mid=H/2+Math.sin(t)*H*.18*Math.min(1,.4+i/600)+Math.sin(t*2.7+1)*H*.08*Math.min(1,i/400);return{top:mid-gap/2+Math.sin(i*.4)*8,bot:mid+gap/2+Math.sin(i*.33+2)*8,spike:i>40&&Math.random()<.025?(Math.random()<.5?-1:1)*(25+Math.random()*35):0}}
 function reset(){cave=[];for(let i=0;i<W/SEG+4;i++)cave.push(genCol(i));off=0;bat={y:H/2,vy:0,sq:1};pings=[];moths=[];score=0;en=1;speed=2.2;dist=0;dead=0;flapT=0;lit=new Float32Array(cave.length);last=performance.now();Hub.setScore(0)}
 let ci=0;
 function flap(){if(!Hub.active()||dead)return;bat.vy=-4.6;bat.sq=1.5;flapT=1;if(en>.12){en-=.12;pings.push({r:0,a:1});Hub.sfx('ping')}else Hub.sfx('click');Hub.vib(6)}
 function col(X){const i=Math.floor((X+off)/SEG)-ci;return cave[Math.max(0,Math.min(cave.length-1,i))]}
-function update(dt){speed=2.2+Math.min(2.2,dist/4000);off+=speed*dt;dist+=speed*dt;while(off>=SEG){off-=SEG;cave.shift();ci=0;cave.push(genCol(Math.floor(dist/SEG)+cave.length));const nl=new Float32Array(cave.length);nl.set(lit.subarray(1));lit=nl}
- bat.vy+=.22*dt;bat.y+=bat.vy*dt;bat.sq+=(1-bat.sq)*.15*dt;en=Math.min(1,en+.0025*dt);
+function update(dt){speed=1.8+Math.min(2.4,dist/5000);off+=speed*dt;dist+=speed*dt;while(off>=SEG){off-=SEG;cave.shift();ci=0;cave.push(genCol(Math.floor(dist/SEG)+cave.length));const nl=new Float32Array(cave.length);nl.set(lit.subarray(1));lit=nl}
+ bat.vy+=.2*dt;bat.y+=bat.vy*dt;bat.sq+=(1-bat.sq)*.15*dt;en=Math.min(1,en+(dist<1500?.005:.003)*dt);if(dist<600)for(let i=0;i<lit.length;i++)lit[i]=Math.max(lit[i],.55*(1-dist/600));
  const bx=110;for(const p of pings){p.r+=7*dt;p.a-=.012*dt}pings=pings.filter(p=>p.a>0);
  for(let i=0;i<cave.length;i++){const X=i*SEG-off;let v=lit[i]*Math.pow(.985,dt);for(const p of pings){const dT=Math.hypot(X-bx,cave[i].top-bat.y),dB=Math.hypot(X-bx,cave[i].bot-bat.y);if(Math.abs(dT-p.r)<12||Math.abs(dB-p.r)<12)v=Math.max(v,p.a)}lit[i]=v}
  if(Math.random()<.012*dt){const c=cave[cave.length-1];moths.push({x:W+10,y:c.top+30+Math.random()*(c.bot-c.top-60),ph:Math.random()*6})}

@@ -22,7 +22,7 @@ const GK=[1,2,0,3,4,6],GC=['#ff4d6d','#3fc8ff','#ffcf3c','#3fe0a0','#b06bff','#f
 function draw(){if(!g)return;const A=Art,tm=performance.now();x.clearRect(0,0,W,H);
  A.panel(x,4,4,W-8,40,12);A.text(x,'剩余步数',16,24,13,'#9aa3c8',{align:'left',w:600});A.text(x,String(moves),88,24,22,moves<=5?'#ff6b6b':'#5ee7ff',{align:'left'});x.fillStyle='rgba(0,0,0,.35)';A.rr(x,W-180,18,160,10,5);x.fill();const pg=x.createLinearGradient(W-180,0,W-20,0);pg.addColorStop(0,'#8b7bff');pg.addColorStop(1,'#ff6ad5');x.fillStyle=pg;A.rr(x,W-180,18,Math.max(10,160*Math.min(1,score/3000)),10,5);x.fill();A.text(x,'目标 3000',W-100,38,10,'#9aa3c8',{w:600});
  const bg=x.createLinearGradient(0,50,0,H);bg.addColorStop(0,'#262c6e');bg.addColorStop(1,'#141640');x.fillStyle=bg;A.rr(x,0,50,W,N*S,14);x.fill();
- for(let r=0;r<N;r++)for(let c=0;c<N;c++){x.fillStyle=(r+c)%2?'rgba(8,10,34,.55)':'rgba(8,10,34,.35)';A.rr(x,c*S+2,r*S+52,S-4,S-4,9);x.fill()}
+ for(let r=0;r<N;r++)for(let c=0;c<N;c++){x.fillStyle=(r+c)%2?'rgba(255,140,200,.16)':'rgba(255,200,230,.08)';A.rr(x,c*S+2,r*S+52,S-4,S-4,9);x.fill()}
  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const t=g[r][c];if(!t)continue;t.y+=(r-t.y)*.3;if(Math.abs(r-t.y)<.01)t.y=r;
   const X=c*S+S/2,Y=t.y*S+S/2+50,isS=sel&&sel[0]===r&&sel[1]===c,pul=isS?1+Math.sin(tm/100)*.08:1;if(isS){x.fillStyle='rgba(255,255,255,.18)';A.rr(x,c*S+2,r*S+52,S-4,S-4,9);x.fill()}A.gem(x,X,Y,S*.36,GK[t.v],GC[t.v],{scale:pul,glow:isS?18:0})}
  if(Hub.active()&&kb){x.strokeStyle='#ffcf5c';x.lineWidth=3;A.rr(x,cur[1]*S+2,cur[0]*S+52,S-4,S-4,9);x.stroke()}

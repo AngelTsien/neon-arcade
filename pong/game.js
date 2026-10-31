@@ -20,15 +20,20 @@ function update(dt){const sp=9;
  trail.push({x:ball.x,y:ball.y});if(trail.length>14)trail.shift()}
 const PS=new Art.Particles();
 function draw(){const A=Art,tm=performance.now();x.save();if(shake>0){x.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.85;if(shake<.5)shake=0}
- const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2a1458');g.addColorStop(.5,'#1a1650');g.addColorStop(1,'#0e2a5a');x.fillStyle=g;x.fillRect(-20,-20,W+40,H+40);
- x.strokeStyle='rgba(255,255,255,.06)';x.lineWidth=1;for(let i=40;i<W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let i=40;i<H;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(W,i);x.stroke()}
- x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=3;A.rr(x,10,10,W-20,H-20,22);x.stroke();x.beginPath();x.moveTo(10,H/2);x.lineTo(W-10,H/2);x.stroke();x.beginPath();x.arc(W/2,H/2,56,0,7);x.stroke();
- A.text(x,String(s2),W/2,H/2-130,110,'rgba(255,106,213,.22)',{shadow:false});A.text(x,String(s1),W/2,H/2+130,110,'rgba(94,231,255,.22)',{shadow:false});
- for(const[p,c]of[[p1,'#5ee7ff'],[p2,'#ff6ad5']]){x.save();x.shadowColor=c;x.shadowBlur=22;A.tile(x,p.x-PW/2,p.y-PH/2,PW,PH+2,PH/2+1,c,{depth:4});x.restore()}
- trail.forEach((t,i)=>{x.globalAlpha=i/trail.length*.45;x.fillStyle='#ffe9a0';x.beginPath();x.arc(t.x,t.y,8*i/trail.length,0,7);x.fill()});x.globalAlpha=1;
- if(ball)A.orb(x,ball.x,ball.y,9,'#ffcf5c',{glow:18,shadow:false});
- parts=parts.filter(p=>(p.x+=p.vx,p.y+=p.vy,p.l--)>0);parts.forEach(p=>{x.globalAlpha=p.l/25;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,2,0,7);x.fill()});x.globalAlpha=1;PS.draw(x);
- A.text(x,MODES[mode]+' · 先得 7 分获胜',W/2,H/2+76,12,'rgba(230,234,255,.6)',{w:600,shadow:false});x.restore();x.textAlign='left'}
+ // 复古 CRT 街机屏：荧光绿像素、虚线中线、扫描线与暗角
+ x.fillStyle='#050a06';x.fillRect(-20,-20,W+40,H+40);const G='#7dff9a',px=6;
+ x.fillStyle='rgba(125,255,154,.05)';for(let i=0;i<W;i+=px*2)for(let j=(i/px/2%2)*px;j<H;j+=px*4)x.fillRect(i,j,1,1);
+ x.fillStyle=G;x.globalAlpha=.55;for(let i=8;i<W-8;i+=px*3)x.fillRect(i,H/2-px/2,px*1.6,px);x.globalAlpha=1;
+ x.strokeStyle='rgba(125,255,154,.35)';x.lineWidth=px/2;x.strokeRect(10,10,W-20,H-20);
+ const dig=(n,X,Y,c)=>{const F=['111101101101111','010110010010111','111001111100111','111001111001111','101101111001001','111100111001111','111100111101111','111001001001001','111101111101111','111101111001111'];String(n).split('').forEach((d,k)=>{const f=F[+d],w=String(n).length;for(let q=0;q<15;q++)if(f[q]==='1'){x.fillStyle=c;x.fillRect(X+(k-w/2)*px*4.5+(q%3)*px*1.4,Y+((q/3)|0)*px*1.4,px*1.3,px*1.3)}})};
+ x.globalAlpha=.35;dig(s2,W/2,H/2-150,G);dig(s1,W/2,H/2+110,G);x.globalAlpha=1;
+ for(const[p,c]of[[p1,'#7dff9a'],[p2,'#ffd23a']]){x.save();x.shadowColor=c;x.shadowBlur=14;x.fillStyle=c;const n=Math.round(PW/px);for(let k=0;k<n;k++)x.fillRect(Math.round((p.x-PW/2)/px)*px+k*px,p.y-PH/2,px-1,PH);x.restore()}
+ trail.forEach((t,i)=>{x.globalAlpha=i/trail.length*.35;x.fillStyle=G;x.fillRect(t.x-px/2,t.y-px/2,px,px)});x.globalAlpha=1;
+ if(ball){x.save();x.shadowColor='#fff';x.shadowBlur=16;x.fillStyle='#f4fff6';x.fillRect(Math.round(ball.x/3)*3-px*1.2,Math.round(ball.y/3)*3-px*1.2,px*2.4,px*2.4);x.restore()}
+ parts=parts.filter(p=>(p.x+=p.vx,p.y+=p.vy,p.l--)>0);parts.forEach(p=>{x.globalAlpha=p.l/25;x.fillStyle=G;x.fillRect(p.x,p.y,3,3)});x.globalAlpha=1;PS.draw(x);
+ x.fillStyle='rgba(0,0,0,.22)';for(let y=(tm/50|0)%3;y<H;y+=3)x.fillRect(0,y,W,1);
+ const vg=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.35,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.7)');x.fillStyle=vg;x.fillRect(0,0,W,H);
+ A.text(x,MODES[mode]+' · 先得 7 分获胜',W/2,H/2+76,12,'rgba(125,255,154,.7)',{w:600,shadow:false});x.restore();x.textAlign='left'}
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(3,(t-last)/16.67);last=t;if(Hub.active())update(dt);draw()}
 Hub.init({duo:()=>mode===0,id:'pong',title:'霓虹乒乓',help:'下方青色球拍是你：←→ 或 鼠标/手指拖动下半屏。双人模式：上方玩家用 A/D 或拖动上半屏。击球位置越靠边，反弹角度越大，球会越来越快。先得 7 分获胜。<br>选择模式：',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
