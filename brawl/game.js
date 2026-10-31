@@ -2,7 +2,7 @@ document.body.classList.add('toon');
 // 动物大乱斗（Critter Clash）：街霸式 2D 格斗。6 名卡通动物，各有专属必杀；闯关 vs CPU 或同屏双人。
 const cv=document.getElementById('c'),x=cv.getContext('2d');let W=900,H=520,PH=false;
 const L=Hub.L,A=Art,INK=A.INK;
-function fit(){const r=document.getElementById('stage').getBoundingClientRect();PH=r.height>r.width*1.1&&r.width<700;if(PH){W=420;H=Math.round(Math.min(900,Math.max(640,420*r.height/r.width)))}else{W=900;H=520}Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+function fit(){const r=document.getElementById('stage').getBoundingClientRect();PH=(r.height>r.width*1.1&&r.width<700)||matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;if(PH){W=420;H=Math.round(Math.min(900,Math.max(640,420*r.height/r.width)))}else{W=900;H=520}Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const ROST=['beaver','tiger','bird','boar','bear','frog'];
 const ST={beaver:{spd:3.4,hp:1,pow:1,jump:13,sp:['尾拍冲击波','Tail Shockwave','Onda di coda'],w:'knife'},tiger:{spd:4.1,hp:.9,pow:1,jump:13.5,sp:['猛虎连爪','Tiger Fury','Furia di tigre'],w:null},bird:{spd:3.9,hp:.85,pow:.95,jump:14.5,sp:['飞羽连射','Feather Volley','Raffica di piume'],w:'sword'},
  boar:{spd:3,hp:1.15,pow:1.15,jump:12,sp:['野猪冲撞','Boar Rush','Carica del cinghiale'],w:null},bear:{spd:2.8,hp:1.22,pow:1.2,jump:12,sp:['震地熊掌','Earthquake Slam','Schianto sismico'],w:null},frog:{spd:3.5,hp:1,pow:.95,jump:15.5,sp:['长舌钩拉','Tongue Grab','Lingua uncinata'],w:null}};

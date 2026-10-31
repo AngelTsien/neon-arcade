@@ -1,7 +1,7 @@
 document.body.classList.add('toon');
 // 萌兽特攻（Critter Strike）：俯视角 2D 战术射击。进攻方（野猪帮）安放炸弹，防守方（森林特警）拆弹。回合间购买武器，换弹、后坐力、视野。
 const cv=document.getElementById('c'),x=cv.getContext('2d');let W=900,H=540,PH=false;const L=Hub.L,A=Art,INK=A.INK;
-function fit(){const r=document.getElementById('stage').getBoundingClientRect();PH=r.height>r.width*1.1&&r.width<700;if(PH){W=420;H=Math.round(Math.min(900,Math.max(640,420*r.height/r.width)))}else{W=900;H=540}Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+function fit(){const r=document.getElementById('stage').getBoundingClientRect();PH=(r.height>r.width*1.1&&r.width<700)||matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;if(PH){W=420;H=Math.round(Math.min(900,Math.max(640,420*r.height/r.width)))}else{W=900;H=540}Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const T=32,GW=40,GH=26,MW=GW*T,MH=GH*T;
 // —— 地图（矩形拼装）——
 const grid=[];for(let y=0;y<GH;y++){grid.push([]);for(let i=0;i<GW;i++)grid[y].push(y===0||y===GH-1||i===0||i===GW-1?1:0)}
