@@ -59,7 +59,7 @@ function draw(){if(!bd)return;const A=Art;x.clearRect(0,0,W,H);x.fillStyle='rgba
  if(kb&&Hub.active()){const[X,Y]=P(...cur);x.strokeStyle='#3f5bff';x.lineWidth=2.5;A.rr(x,X-G/2,Y-G/2,G,G,8);x.stroke()}
  A.text(x,mt>0?(mt--,msg):think?'AI 思考中…':diff===3?'双人对战 · '+(turn==='r'?'红方走棋':'黑方走棋')+' · U 悔棋':'['+DN[diff]+'] '+(turn==='r'?'轮到你（红方）':'')+' · U 悔棋',W/2,H-22,14,'#cfd6ff',{w:600});if(mt>0&&msg==='将军！')A.text(x,'将 军 ！',W/2,H/2-20,48,'#ff4d6d',{glow:'rgba(255,77,109,.6)'})}
 (function loop(){requestAnimationFrame(loop);draw()})();
-Hub.init({id:'xiangqi',title:'中国象棋',scoreLabel:'积分',help:'你执红先行，与 AI 对弈。点击己方棋子显示可走位置，再点目标落子。完整规则：蹩马腿、塞象眼、炮隔子吃、兵过河可横走、将帅不能照面。困死/将死对方即胜。U 悔棋（扣分）。键盘：方向键 + 空格。<br>选择 AI 难度：',onStart(){reset()}});
+Hub.init({duo:()=>diff===3,id:'xiangqi',title:'中国象棋',scoreLabel:'积分',help:'你执红先行，与 AI 对弈。点击己方棋子显示可走位置，再点目标落子。完整规则：蹩马腿、塞象眼、炮隔子吃、兵过河可横走、将帅不能照面。困死/将死对方即胜。U 悔棋（扣分）。键盘：方向键 + 空格。<br>选择 AI 难度：',onStart(){reset()}});
 reset();
 {const row=document.createElement('div');row.className='row';const m=()=>{row.innerHTML=DN.map((n,i)=>`<button class="btn${i===diff?' on':''}" data-d="${i}">${n}</button>`).join('')};m();
  row.onclick=e=>{const d=e.target.dataset.d;if(d!=null){diff=+d;localStorage.setItem('xq_diff',d);m();Hub.sfx('click')}};Hub.$st.insertBefore(row,Hub.$st.querySelector('.row'));

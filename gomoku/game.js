@@ -43,7 +43,7 @@ function draw(){if(!bd)return;const A=Art;x.clearRect(0,0,SZ,SZ+40);x.save();x.f
  if(win){const t=performance.now();x.strokeStyle='#ffcf5c';x.lineWidth=3;x.shadowColor='#ffcf5c';x.shadowBlur=16+6*Math.sin(t/200);win.forEach(([r,c])=>{x.beginPath();x.arc(M+c*G,M+r*G,G*.47,0,7);x.stroke()});x.shadowBlur=0}
  if(Hub.active()&&!win&&!('ontouchstart' in window)&&!bd[cur[0]][cur[1]])stone(M+cur[1]*G,M+cur[0]*G,1,G*.44,.35);
  A.text(x,win?'':thinking?'AI 思考中…':diff===3?(turn===1?'双人对战 · 黑方落子':'双人对战 · 白方落子')+' · U 悔棋 · 手数 '+hist.length:'['+DN[diff]+'] 你执黑子（先手） · U 悔棋 · 手数 '+hist.length,SZ/2,SZ+22,14,'#cfd6ff',{w:600})}
-Hub.init({id:'gomoku',title:'五子棋',scoreLabel:'积分',help:'你执黑子先行，与 AI 对弈，先连成五子者胜。点击落子；键盘方向键移动光标、空格落子；U 悔棋（悔棋会扣分）。获胜积分 = (1000 − 手数×10) × 难度倍率（简单×1 普通×2 困难×3）。困难模式 AI 使用 α-β 剪枝搜索 4 层。',onStart(){reset()},onResume(){draw()}});
+Hub.init({duo:()=>diff===3,id:'gomoku',title:'五子棋',scoreLabel:'积分',help:'你执黑子先行，与 AI 对弈，先连成五子者胜。点击落子；键盘方向键移动光标、空格落子；U 悔棋（悔棋会扣分）。获胜积分 = (1000 − 手数×10) × 难度倍率（简单×1 普通×2 困难×3）。困难模式 AI 使用 α-β 剪枝搜索 4 层。',onStart(){reset()},onResume(){draw()}});
 reset();fit();
 {const row=document.createElement('div');row.className='row';row.innerHTML=DN.map((n,i)=>`<button class="btn" data-d="${i}">${n}</button>`).join('');Hub.$st.insertBefore(row,Hub.$st.querySelector('.row'));const upd=()=>row.querySelectorAll('button').forEach(b=>{const on=+b.dataset.d===diff;b.classList.toggle('on',on)});upd();row.onclick=e=>{const d=e.target.dataset.d;if(d!=null){diff=+d;localStorage.setItem('gomoku_diff',d);upd();Hub.sfx('click')}};
 const r2=row.cloneNode(true);Hub.$ov.insertBefore(r2,Hub.$ov.querySelector('.row'));r2.onclick=e=>{row.onclick(e);r2.querySelectorAll('button').forEach(b=>{const on=+b.dataset.d===diff;b.classList.toggle('on',on)})};}

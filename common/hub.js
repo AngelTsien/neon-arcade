@@ -5,7 +5,7 @@ const DEF={lang:null,vol:.8,music:.45,sfx:.9,bgm:true,vib:true,rm:false,fps:fals
  keys:{p1:{up:'w',down:'s',left:'a',right:'d',a:'f',b:'g'},p2:{up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight',a:'k',b:'l'}}};
 function load(){let s={};try{s=JSON.parse(localStorage.getItem('hub_settings')||'{}')}catch(e){}const o=Object.assign({},DEF,s);o.keys={p1:Object.assign({},DEF.keys.p1,(s.keys||{}).p1),p2:Object.assign({},DEF.keys.p2,(s.keys||{}).p2)};return o}
 H.S=load();H.muted=localStorage.getItem('hub_muted')==='1';
-H.saveS=function(){const cur=load();const o=Object.assign({},H.S);o.lang=(window.I18N&&I18N.lang)||cur.lang;localStorage.setItem('hub_settings',JSON.stringify(o));H.applyS()};
+H.saveS=function(){if(document.querySelector('.hs-wrap')&&H.statBump)setTimeout(()=>H.statBump(st=>st.tune=1),0);const cur=load();const o=Object.assign({},H.S);o.lang=(window.I18N&&I18N.lang)||cur.lang;localStorage.setItem('hub_settings',JSON.stringify(o));H.applyS()};
 // ---------- 音频 ----------
 let ac=null,master,sfxB,musB,comp;
 function ctx(){if(!ac){try{ac=new (window.AudioContext||window.webkitAudioContext)();comp=ac.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;comp.connect(ac.destination);master=ac.createGain();master.connect(comp);sfxB=ac.createGain();musB=ac.createGain();sfxB.connect(master);musB.connect(master);H.applyVol()}catch(e){ac=null}}if(ac&&ac.state==='suspended')ac.resume().catch(()=>{});return ac}
@@ -41,6 +41,14 @@ H.noise=function(d,vol){A.noise({dur:d,vol:vol||.15,a:.002,d:d*.3,s:.4,r:d*.7})}
 // ---------- 主题音效 ----------
 const R=(a,b)=>a+Math.random()*(b-a);
 const TH={
+ cave:{click:()=>A.blip(1800,.02,0,'sine'),ping:()=>{A.osc({f:2400,f2:1600,type:'sine',dur:.12,vol:.05});A.osc({f:2400,f2:1600,type:'sine',dur:.12,vol:.02,at:ctx().currentTime+.14})},coin:()=>{A.osc({f:700,f2:1400,type:'triangle',dur:.09,vol:.06});A.blip(1760,.05,ctx().currentTime+.08,'sine')},bad:()=>{A.noise({dur:.5,vol:.18,filter:['lowpass',900,1,120]});A.osc({f:200,f2:40,type:'triangle',dur:.5,vol:.08})},score:()=>A.blip(1200,.05,0,'sine')},
+ snow:{click:()=>A.blip(900,.03,0,'triangle'),coin:()=>{A.blip(1568,.06,0,'sine');A.blip(2093,.08,ctx().currentTime+.05,'sine')},hit:()=>{A.noise({dur:.18,vol:.16,filter:['bandpass',1800,1,600]});A.osc({f:300,f2:120,type:'triangle',dur:.12,vol:.06})},bad:()=>{A.noise({dur:.35,vol:.2,filter:['lowpass',1200,1,200]})},lose:()=>{A.noise({dur:.8,vol:.18,filter:['lowpass',2000,1,100]})},score:()=>A.blip(1046,.06,0,'triangle')},
+ sea:{click:()=>A.blip(500,.04,0,'sine'),score:()=>{A.osc({f:392,type:'sine',dur:.35,vol:.07});A.osc({f:587,type:'sine',dur:.45,vol:.05,at:ctx().currentTime+.12})},boom:()=>{A.noise({dur:.7,vol:.22,filter:['lowpass',700,1,80]});A.osc({f:90,f2:30,type:'sine',dur:.6,vol:.12})},bad:()=>A.osc({f:180,f2:90,type:'sine',dur:.3,vol:.08})},
+ twin:{click:()=>A.blip(700,.03,0,'triangle'),coin:()=>{A.blip(1047,.05,0,'triangle');A.blip(1319,.05,ctx().currentTime+.05,'sine');A.blip(1568,.06,ctx().currentTime+.1,'triangle')},bad:()=>{A.osc({f:440,f2:110,type:'sawtooth',dur:.3,vol:.05});A.osc({f:466,f2:116,type:'sawtooth',dur:.3,vol:.05})},score:()=>A.blip(880,.05,0,'triangle')},
+ balloon:{click:()=>A.blip(600,.03,0,'triangle'),tick:()=>A.noise({dur:.08,vol:.05,filter:['bandpass',1400+Math.random()*800,2,600]}),coin:()=>{A.osc({f:300,f2:900,type:'triangle',dur:.25,vol:.07});A.blip(1200,.06,ctx().currentTime+.2,'sine')},boom:()=>{A.noise({dur:.25,vol:.35,filter:['highpass',300,1,8000]});A.osc({f:160,f2:40,type:'square',dur:.15,vol:.08})}},
+ paint:{click:()=>A.blip(420,.03,0,'sine'),drop:()=>A.osc({f:900+Math.random()*300,f2:300,type:'sine',dur:.09,vol:.08}),score:()=>{A.blip(659,.08,0,'sine');A.blip(988,.1,ctx().currentTime+.08,'sine')},bad:()=>A.osc({f:220,f2:180,type:'triangle',dur:.2,vol:.06})},
+ orbit:{click:()=>A.blip(800,.03,0,'sine'),jump:()=>A.osc({f:300,f2:700,type:'sine',dur:.2,vol:.06}),score:()=>{A.blip(784,.06,0,'triangle');A.blip(1175,.08,ctx().currentTime+.07,'triangle')},bad:()=>{A.osc({f:500,f2:80,type:'sine',dur:.6,vol:.07});A.noise({dur:.3,vol:.1,filter:['lowpass',1500,1,200]})}},
+
  retro:{click:()=>A.blip(660),move:()=>A.blip(300,.04,0,'triangle'),score:()=>{A.blip(880,.05);A.blip(1320,.05,ctx().currentTime+.06)},hit:()=>A.osc({f:220,f2:80,type:'sawtooth',dur:.14,vol:.07}),boom:()=>{A.noise({dur:.45,vol:.2,filter:['lowpass',3000,1,200]});A.osc({f:120,f2:30,type:'square',dur:.4,vol:.07})},jump:()=>A.osc({f:380,f2:900,type:'square',dur:.13,vol:.05}),shoot:()=>A.osc({f:1200,f2:300,type:'square',dur:.08,vol:.03}),flip:()=>A.osc({f:520,f2:780,type:'triangle',dur:.06,vol:.07}),bad:()=>A.osc({f:160,f2:110,type:'square',dur:.22,vol:.06})},
  arcade:{click:()=>A.osc({f:900,f2:1300,type:'square',dur:.05,vol:.04}),move:()=>A.osc({f:500,type:'square',dur:.03,vol:.03}),score:()=>{const t=ctx().currentTime;[988,1319].forEach((f,i)=>A.osc({f,type:'square',dur:.07,vol:.045,at:t+i*.05}))},hit:()=>{A.noise({dur:.12,vol:.12,filter:['bandpass',900,2]});A.osc({f:300,f2:60,type:'sawtooth',dur:.12,vol:.06})},boom:()=>{A.noise({dur:.6,vol:.22,filter:['lowpass',2400,1,120]});A.osc({f:90,f2:28,type:'sine',dur:.5,vol:.16})},jump:()=>A.osc({f:300,f2:1000,type:'square',dur:.12,vol:.04,filter:['lowpass',3000]}),shoot:()=>A.osc({f:1800,f2:220,type:'sawtooth',dur:.09,vol:.035,fm:[.5,.8]}),flip:()=>A.osc({f:700,f2:1100,type:'triangle',dur:.05,vol:.06}),bad:()=>A.osc({f:200,f2:90,type:'sawtooth',dur:.25,vol:.06,filter:['lowpass',900]})},
  space:{click:()=>A.osc({f:1000,type:'sine',dur:.06,vol:.06,fm:[2,1.5]}),move:()=>A.osc({f:420,type:'sine',dur:.05,vol:.04,fm:[1.5,.8]}),score:()=>A.bell(1046,.06),hit:()=>A.osc({f:240,f2:60,type:'sine',dur:.2,vol:.12,fm:[1.41,4,.1]}),boom:()=>{A.noise({dur:.9,vol:.2,filter:['lowpass',1500,1,90]});A.osc({f:70,f2:25,type:'sine',dur:.7,vol:.18})},jump:()=>A.osc({f:220,f2:880,type:'sine',dur:.18,vol:.07,fm:[2,2]}),shoot:()=>A.osc({f:2400,f2:180,type:'sine',dur:.12,vol:.06,fm:[.5,3,.1]}),flip:()=>A.osc({f:660,f2:990,type:'sine',dur:.08,vol:.06,fm:[3,1]}),bad:()=>A.osc({f:180,f2:90,type:'triangle',dur:.3,vol:.08,fm:[1.01,3]})},
@@ -55,8 +63,8 @@ const TH={
 };
 // 结束 / 胜利 共享但随主题变化音色
 function jingle(seq,kind,gap){const t=ctx().currentTime;seq.forEach((f,i)=>{const at=t+i*gap;if(kind==='wood')A.wood(f/2,.14,at),A.bell(f,.04,at,.6);else if(kind==='zen'||kind==='card'||kind==='water')A.bell(f,.05,at,.8);else if(kind==='juicy'||kind==='party')A.osc({f,type:'sine',dur:.22,vol:.08,fm:[4,1,.05],at});else if(kind==='space')A.osc({f,type:'sine',dur:.3,vol:.07,fm:[2,1.5,.2],at});else A.osc({f,type:kind==='mech'?'sawtooth':'square',dur:.2,vol:.05,filter:['lowpass',3000],at})})}
-const GT={snake:'retro',tetris:'retro',pacman:'retro',asteroids:'space',pong:'sport',breakout:'retro',tank:'mech',bomber:'mech',shooter:'arcade',runner:'arcade',subway:'arcade',racer:'mech',pinball:'arcade',slingshot:'juicy',ninja:'juicy',fishy:'water',boat:'water',xiangqi:'wood',gomoku:'wood',reversi:'wood',chess:'wood',ludo:'party',towerdef:'space',klotski:'wood',sokoban:'retro',pipes:'zen','2048':'zen',minesweeper:'retro',sudoku:'zen',memory:'card',lianliankan:'zen',mahjong:'wood',onestroke:'zen',lightsout:'zen',freecell:'card',spider:'card',tangram:'wood',hex2048:'zen',merge:'juicy',stack:'zen',rhythm:'arcade',match3:'juicy',bubble:'juicy',flappy:'retro',whack:'juicy',knife:'wood',jump:'zen',golf:'sport',goldminer:'mech',piano:'zen'};
-const GC={snake:'classic',tetris:'classic',pacman:'classic',asteroids:'classic',pong:'classic',breakout:'classic',tank:'classic',bomber:'classic',shooter:'action',runner:'action',subway:'action',racer:'action',pinball:'action',slingshot:'action',ninja:'action',fishy:'action',boat:'action',xiangqi:'board',gomoku:'board',reversi:'board',chess:'board',ludo:'board',towerdef:'strategy',klotski:'strategy',sokoban:'strategy',pipes:'strategy'};
+const GT={doudizhu:'card',colorcards:'card',connect4:'wood',uttt:'zen',battleship:'water',quiz:'party',soccer:'sport',snake:'retro',tetris:'retro',pacman:'retro',asteroids:'space',pong:'sport',breakout:'retro',tank:'mech',bomber:'mech',shooter:'arcade',runner:'arcade',subway:'arcade',racer:'mech',pinball:'arcade',slingshot:'juicy',ninja:'juicy',fishy:'water',boat:'water',xiangqi:'wood',gomoku:'wood',reversi:'wood',chess:'wood',ludo:'party',towerdef:'space',klotski:'wood',sokoban:'retro',pipes:'zen','2048':'zen',minesweeper:'retro',sudoku:'zen',memory:'card',lianliankan:'zen',mahjong:'wood',onestroke:'zen',lightsout:'zen',freecell:'card',spider:'card',tangram:'wood',hex2048:'zen',merge:'juicy',stack:'zen',rhythm:'arcade',match3:'juicy',bubble:'juicy',flappy:'retro',whack:'juicy',knife:'wood',jump:'zen',golf:'sport',goldminer:'mech',piano:'zen'};
+const GC={doudizhu:'board',colorcards:'party',connect4:'board',uttt:'board',battleship:'strategy',quiz:'party',soccer:'party',snake:'classic',tetris:'classic',pacman:'classic',asteroids:'classic',pong:'classic',breakout:'classic',tank:'classic',bomber:'classic',shooter:'action',runner:'action',subway:'action',racer:'action',pinball:'action',slingshot:'action',ninja:'action',fishy:'action',boat:'action',xiangqi:'board',gomoku:'board',reversi:'board',chess:'board',ludo:'board',towerdef:'strategy',klotski:'strategy',sokoban:'strategy',pipes:'strategy'};
 H.theme=()=>H.o&&H.o.theme||GT[H.id]||(H.id&&H.id.startsWith('p_')?'party':'retro');
 H.cat=()=>H.o&&H.o.cat||GC[H.id]||(H.id&&H.id.startsWith('p_')?'party':['merge','stack','match3','bubble','flappy','whack','knife','jump','golf','goldminer'].includes(H.id)?'casual':'puzzle');
 const VIB={hit:18,boom:[40,30,50],bad:30,over:[60,40,80],win:[25,30,25,30,60]};
@@ -118,7 +126,7 @@ const st=document.createElement('style');st.textContent=`html.hub-rm *{animation
 .hs .keys b{color:#9aa3c8;font-weight:600;text-align:center}
 .hs .keys button{cursor:pointer;min-width:0;padding:7px 2px;border-radius:8px;border:1px solid rgba(160,180,255,.22);background:rgba(0,0,0,.25);color:#fff;font:700 12px ui-monospace,monospace;overflow:hidden;text-overflow:ellipsis}
 .hs .keys button.wait{background:#6c5cff;animation:hsp .8s infinite}@keyframes hsp{50%{opacity:.5}}
-.hs select{flex:1;min-width:0;max-width:220px;padding:8px;border-radius:10px;background:#1a1f55;color:#fff;border:1px solid rgba(160,180,255,.25);font:inherit}
+.hub-modes{flex-wrap:wrap;justify-content:center;gap:6px}.hub-modes .btn{padding:7px 12px;font-size:13px}.hs .row.rec{flex-wrap:wrap;gap:8px}.hs .row.rec select{flex:1 1 100%;max-width:none}@media(min-width:520px){.hs .row.rec select{flex:1 1 0}}.hs select{flex:1;min-width:0;max-width:220px;padding:8px;border-radius:10px;background:#1a1f55;color:#fff;border:1px solid rgba(160,180,255,.25);font:inherit}
 .hs .note{font-size:12px;color:#8b96c9;padding:2px 4px 8px}
 @media (max-width:420px){.hs{padding:14px 12px}.hs .row>span{min-width:100%}.hs input[type=range]{max-width:none}.hs .seg button{padding:7px 10px}}`;
 (document.head||document.documentElement).appendChild(st);
@@ -138,7 +146,7 @@ H.openSettings=function(opt){opt=opt||{};if(document.querySelector('.hs-wrap'))r
  const AC=['up','left','down','right','a','b'],ACN=['上','左','下','右','A','B'];
  const keys=`<div class="keys"><span></span>${ACN.map(n=>`<b>${n}</b>`).join('')}${['p1','p2'].map(p=>`<b>${p.toUpperCase()}</b>`+AC.map(a=>`<button data-kp="${p}" data-ka="${a}">${H.keyName(S.keys[p][a])}</button>`).join('')).join('')}</div>`;
  const games=opt.games||[];
- const rec=H.id?`<div class="row"><span>${H.o?H.o.title:''}</span><button class="b warn" data-act="rg">清除本游戏纪录</button></div>`:(games.length?`<div class="row"><select id="hs-g">${games.map(g=>`<option value="${g[0]}">${g[1]}</option>`).join('')}</select><button class="b warn" data-act="rsel">清除所选纪录</button></div>`:'')+`<div class="row"><span>全部游戏</span><button class="b warn" data-act="rall">清除全部纪录</button></div>`;
+ const rec=H.id?`<div class="row"><span>${H.o?H.o.title:''}</span><button class="b warn" data-act="rg">清除本游戏纪录</button></div>`:(games.length?`<div class="row rec"><select id="hs-g">${games.map(g=>`<option value="${g[0]}">${g[1]}</option>`).join('')}</select><button class="b warn" data-act="rsel">清除所选纪录</button></div>`:'')+`<div class="row"><span>全部游戏</span><button class="b warn" data-act="rall">清除全部纪录</button></div>`;
  const w=document.createElement('div');w.className='hs-wrap';w.innerHTML=`<div class="hs" role="dialog" aria-label="设置"><h2>${ICG.replace('18','24').replace('18','24')} 设置 <button class="b x" data-act="close" aria-label="关闭">✕</button></h2>
  <h3>语言 · Language · Lingua</h3><div class="row"><div class="seg" id="hs-lang">${[['zh','中文'],['it','Italiano'],['en','English']].map(([c,n])=>`<button data-lang="${c}" class="${L===c?'on':''}">${n}</button>`).join('')}</div></div>
  <h3>声音</h3>${sl('vol','主音量')}${sl('music','音乐')}${sl('sfx','音效')}${sw('bgm','背景音乐','按游戏类别自动生成的轻音乐')}
@@ -205,13 +213,68 @@ H.init=function(o){
  H.showBest=showBest;
 };
 H.gen=0;H.later=function(ms,fn){const g=H.gen;const tick=()=>{if(!H.running||H.gen!==g)return;if(H.paused){setTimeout(tick,120);return}fn()};setTimeout(tick,ms)};
-H.start=function(){H.gen++;H.ctx();H.sfx('click');[H.$st,H.$pa,H.$ov].forEach(x=>x.classList.remove('show'));H.paused=false;H.running=true;H.setScore(0);H.o.onStart&&H.o.onStart()};
+H.start=function(){H.gen++;H.track&&H.track.start();if(H.track&&!document.querySelector('#stage canvas')){const t=H._t0;setTimeout(()=>{H.track.end(0,false,false);H._t0=t},50)}H.ctx();H.sfx('click');[H.$st,H.$pa,H.$ov].forEach(x=>x.classList.remove('show'));H.paused=false;H.running=true;H.setScore(0);H.o.onStart&&H.o.onStart()};
 H.togglePause=function(v){if(!H.running)return;H.paused=v===undefined?!H.paused:v;H.$pa.classList.toggle('show',H.paused);if(!H.paused)H.o.onResume&&H.o.onResume()};
 H.gameOver=function(score,title,win){if(!H.running)return;H.running=false;H.paused=false;const b=H.best();let nb=false;
  if(score>0&&(b===0||(H.lowerBetter?score<b:score>b))){localStorage.setItem('hub_best_'+H.id,score);nb=true}
  H.$ov.querySelector('#hb-ot').textContent=title||'游戏结束';H.$ov.querySelector('#hb-os').textContent=H.fmt(score);
  H.$ov.querySelector('#hb-nb').innerHTML=nb?'<div class="newbest">★ 新纪录！★</div>':'<p>最佳：'+(H.best()?H.fmt(H.best()):'—')+'</p>';
- H.showBest();setTimeout(()=>H.$ov.classList.add('show'),400);H.sfx(win||(title&&title.includes('胜'))?'win':'over')};
+ H.showBest();setTimeout(()=>H.$ov.classList.add('show'),400);const W_=win||(title&&title.includes('胜'));H.sfx(W_?'win':'over');H.track&&setTimeout(()=>H.track.end(score,!!W_,nb),900)};
+
+H.modeBar=function(opts,cur,onChange){const mk=()=>{const el=document.createElement('div');el.className='row hub-modes';return el};const bars=[];const L=o=>{const l=window.I18N?I18N.lang:'zh';return l==='en'?o[2]:l==='it'?o[3]:o[1]};
+ const r=()=>bars.forEach(el=>{el.innerHTML=opts.map(o=>`<button class="btn ${o[0]===cur?'on':''}" data-m="${o[0]}">${L(o)}</button>`).join('')});
+ ['ov-start','ov-over'].forEach(id=>{const ov=document.getElementById(id);if(!ov)return;const el=mk();ov.insertBefore(el,ov.querySelector('.row'));bars.push(el);el.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;cur=isNaN(+b.dataset.m)?b.dataset.m:+b.dataset.m;r();H.sfx('click');b.blur();onChange(cur)})});r();addEventListener('langchange',r);return{set(v){cur=v;r()}}};
+H.L=(z,e,i)=>{const l=window.I18N?I18N.lang:'zh';return l==='en'?e:l==='it'?i:z};
+
+// ===== 成就系统 =====
+(function(){const AK='hub_ach',SK='hub_stats';const J=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+ H.stats=()=>J(SK,{});const save=st=>localStorage.setItem(SK,JSON.stringify(st));H.achGot=()=>J(AK,{});
+ const PARTY=['balloon','undercover','werewolf','draw','charades','truth','numbomb','reflex','hockey','soccer','quiz','colorcards'],BOARD=['doudizhu','xiangqi','gomoku','reversi','chess','connect4','uttt','battleship','ludo'];
+ const n=o=>Object.keys(o||{}).length,dist=st=>n(st.g),wins=st=>Object.values(st.g||{}).reduce((a,g)=>a+(g.w||0),0),plays=st=>st.plays||0;
+ const streak=st=>{const d=(st.days||[]).slice().sort();let best=0,cur=0,prev=null;for(const x of d){const t=Date.parse(x);cur=prev!==null&&t-prev===864e5?cur+1:1;best=Math.max(best,cur);prev=t}return best};
+ const tot=()=>+localStorage.getItem('hub_total')||60;
+ H.ACH=[
+  ['first','🎮','初次登场','First steps','Primi passi','完成第一局游戏','Finish your first game','Completa la prima partita',st=>plays(st)/1],
+  ['p10','🕹️','常客','Regular','Habitué','累计玩 10 局','Play 10 games','Gioca 10 partite',st=>plays(st)/10],
+  ['p50','👾','街机达人','Arcade ace','Asso dell\'arcade','累计玩 50 局','Play 50 games','Gioca 50 partite',st=>plays(st)/50],
+  ['p200','🌌','霓虹传奇','Neon legend','Leggenda al neon','累计玩 200 局','Play 200 games','Gioca 200 partite',st=>plays(st)/200],
+  ['g10','🧭','尝鲜者','Sampler','Assaggiatore','玩过 10 款不同游戏','Try 10 different games','Prova 10 giochi diversi',st=>dist(st)/10],
+  ['g30','🗺️','探索家','Explorer','Esploratore','玩过 30 款不同游戏','Try 30 different games','Prova 30 giochi diversi',st=>dist(st)/30],
+  ['gall','💎','全收集','Completionist','Completista','每一款游戏都玩过','Play every game in the hub','Gioca a tutti i giochi',st=>dist(st)/tot()],
+  ['w1','🏅','首胜','First win','Prima vittoria','赢下一局','Win a game','Vinci una partita',st=>wins(st)/1],
+  ['w25','👑','常胜将军','Champion','Campione','累计获胜 25 次','Win 25 games','Vinci 25 partite',st=>wins(st)/25],
+  ['rec10','📈','破纪录者','Record breaker','Batti-record','刷新最高分 10 次','Set 10 new records','Stabilisci 10 nuovi record',st=>(st.recs||0)/10],
+  ['board3','♟️','棋盘大师','Board master','Maestro da tavolo','在 3 款棋类游戏中获胜','Win in 3 different board games','Vinci in 3 giochi da tavolo',st=>BOARD.filter(g=>(st.g||{})[g]&&st.g[g].w).length/3],
+  ['party5','🎉','派对之王','Party animal','Animale da festa','玩 5 局多人/聚会游戏','Play 5 party games','Gioca 5 giochi di gruppo',st=>PARTY.reduce((a,g)=>a+(((st.g||{})[g]||{}).p||0),0)/5],
+  ['duo','🤝','好搭档','Dynamic duo','Coppia affiatata','玩一局本地双人模式','Play a local 2-player mode','Gioca una modalità per 2 in locale',st=>(st.duo||0)/1],
+  ['duo10','🫶','双人搭档 ×10','Duo ×10','Coppia ×10','玩 10 局本地双人模式','Play 10 local 2-player games','Gioca 10 partite per 2 in locale',st=>(st.duo||0)/10],
+  ['lang3','🌐','多语玩家','Polyglot','Poliglotta','用中文、English、Italiano 各玩一局','Play in Chinese, English and Italian','Gioca in cinese, inglese e italiano',st=>n(st.langs)/3],
+  ['night','🦉','夜猫子','Night owl','Nottambulo','在凌晨 0–5 点玩一局','Play between midnight and 5 am','Gioca tra mezzanotte e le 5',st=>st.night?1:0],
+  ['time60','⏳','沉浸一小时','In the zone','Immerso','累计游戏时间 1 小时','Play for 1 hour in total','Gioca 1 ora in totale',st=>(st.time||0)/3600],
+  ['days3','📅','三天打卡','Three-day streak','Tre giorni di fila','连续 3 天游玩','Play 3 days in a row','Gioca 3 giorni di fila',st=>streak(st)/3],
+  ['tune','🎚️','调音师','Sound tweaker','Fonico','在设置里调整过选项','Change something in Settings','Modifica un\'impostazione',st=>st.tune?1:0]];
+ H.achName=a=>H.L(a[2],a[3],a[4]);H.achDesc=a=>H.L(a[5],a[6],a[7]);
+ const st0=document.createElement('style');st0.textContent=`.hub-toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-140%);z-index:300;display:flex;align-items:center;gap:12px;padding:10px 18px 10px 12px;border-radius:18px;background:linear-gradient(180deg,rgba(60,66,150,.96),rgba(26,30,80,.96));box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,207,92,.45),inset 0 1px 0 rgba(255,255,255,.2);color:#fff;transition:transform .5s cubic-bezier(.2,1.4,.4,1);pointer-events:none;max-width:92vw}
+ .hub-toast.on{transform:translate(-50%,0)}.hub-toast .i{font-size:30px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6c0,#ffb21c);box-shadow:0 0 20px rgba(255,207,92,.6)}.hub-toast small{display:block;font-size:11px;letter-spacing:2px;color:#ffcf5c;font-weight:800}.hub-toast b{font-size:16px}
+ .ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.ach{border-radius:16px;padding:12px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(160,180,255,.14);display:flex;flex-direction:column;gap:6px;min-width:0}
+ .ach .aic{font-size:26px;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);filter:grayscale(1);opacity:.55}.ach.got .aic{filter:none;opacity:1;background:radial-gradient(circle at 35% 30%,#fff6c0,#ffb21c);box-shadow:0 0 18px rgba(255,207,92,.45)}
+ .ach b{font-size:14px}.ach span{font-size:11.5px;color:#aab4e8;line-height:1.35}.ach .bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}.ach .bar i{display:block;height:100%;background:linear-gradient(90deg,#8b7bff,#4dffc3)}.ach.got{box-shadow:inset 0 0 0 1px rgba(255,207,92,.5)}
+ @media(max-width:420px){.ach-grid{grid-template-columns:1fr 1fr}.ach{padding:10px}}`;document.head.appendChild(st0);
+ const q=[];let busy=false;function toast(a){q.push(a);if(!busy)pump()}
+ function pump(){const a=q.shift();if(!a){busy=false;return}busy=true;const el=document.createElement('div');el.className='hub-toast';el.innerHTML=`<div class="i">${a[1]}</div><div><small>${H.L('解锁成就','ACHIEVEMENT UNLOCKED','OBIETTIVO SBLOCCATO')}</small><b>${H.achName(a)}</b></div>`;document.body.appendChild(el);
+  try{H.audio&&H.audio.bell?H.audio.bell(1046,.5):H.sfx('win')}catch(e){}requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));setTimeout(()=>{el.classList.remove('on');setTimeout(()=>{el.remove();pump()},500)},2600)}
+ H.checkAch=function(quiet){const st=H.stats(),got=H.achGot();let ch=false;for(const a of H.ACH){if(got[a[0]])continue;let v=0;try{v=a[8](st)}catch(e){}if(v>=1){got[a[0]]=Date.now();ch=true;if(!quiet)toast(a)}}if(ch)localStorage.setItem(AK,JSON.stringify(got))};
+ H.statBump=function(fn){const st=H.stats();fn(st);save(st);H.checkAch()};
+ H.track={start(){H._t0=Date.now();H._duo=!!(H.o&&H.o.duo&&(()=>{try{return H.o.duo()}catch(e){return false}})())},
+  end(score,win,nb){if(!H.id)return;const el=Math.min(3600,(Date.now()-(H._t0||Date.now()))/1000);H.statBump(st=>{st.plays=(st.plays||0)+1;st.g=st.g||{};const g=st.g[H.id]=st.g[H.id]||{p:0,w:0};g.p++;if(win)g.w++;if(nb)st.recs=(st.recs||0)+1;
+   st.langs=st.langs||{};st.langs[(window.I18N&&I18N.lang)||'zh']=1;const d=new Date();if(d.getHours()<5)st.night=1;st.time=(st.time||0)+el;const day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');st.days=st.days||[];if(!st.days.includes(day)){st.days.push(day);if(st.days.length>40)st.days.shift()}if(H._duo)st.duo=(st.duo||0)+1});H._t0=0}};
+ addEventListener('pagehide',()=>{if(H.running&&H._t0){const el=Math.min(3600,(Date.now()-H._t0)/1000);const st=H.stats();st.time=(st.time||0)+el;save(st)}});
+ H.openAch=function(){if(document.querySelector('.hs-wrap'))return;const st=H.stats(),got=H.achGot();const w=document.createElement('div');w.className='hs-wrap';const k=H.ACH.filter(a=>got[a[0]]).length;
+  w.innerHTML=`<div class="hs" role="dialog"><h2><span style="font-size:24px">🏆</span>${H.L('成就','Achievements','Obiettivi')}<span style="margin-left:auto;font-size:14px;color:#ffcf5c">${k} / ${H.ACH.length}</span><button class="b" data-act="x" aria-label="close" style="margin-left:10px">✕</button></h2>
+  <div class="ach-grid">${H.ACH.map(a=>{let v=0;try{v=Math.min(1,a[8](st))}catch(e){}const g=!!got[a[0]];return `<div class="ach ${g?'got':''}"><div class="aic">${a[1]}</div><b>${H.achName(a)}</b><span>${H.achDesc(a)}</span><div class="bar"><i style="width:${(g?1:v)*100}%"></i></div></div>`}).join('')}</div>
+  <p style="margin-top:12px;font-size:11px;color:#8a94c8;text-align:center">${H.L('累计 ','Total: ','Totale: ')+plays(st)+H.L(' 局 · 获胜 ',' games · ',' partite · ')+wins(st)+H.L(' 次 · 游戏时间 ',' wins · ',' vittorie · ')+Math.round((st.time||0)/60)+H.L(' 分钟',' min played',' min di gioco')}</p></div>`;
+  document.body.appendChild(w);H.sfx('click');const close=()=>{w.remove()};w.addEventListener('click',e=>{if(e.target===w||e.target.closest('[data-act="x"]'))close()});addEventListener('keydown',function f(e){if(e.key==='Escape'){close();removeEventListener('keydown',f)}})};
+})();
 H.active=()=>H.running&&!H.paused;
 // 滑动手势
 H.swipe=function(target,cb){let sx,sy,t;target.addEventListener('touchstart',e=>{const p=e.touches[0];sx=p.clientX;sy=p.clientY;t=Date.now()},{passive:true});
@@ -222,3 +285,6 @@ H.hold=function(btn,on,off){btn.addEventListener('touchstart',e=>{e.preventDefau
 H.flex=function(bw,bh,o){o=o||{};const r=document.getElementById('stage').getBoundingClientRect();if(!(r.height>r.width*1.15)||r.width>700)return{W:bw,H:bh};const W=o.pw||bw;return{W,H:Math.round(Math.min(W*(o.max||2.4),Math.max(bh*(o.min||.75),W*(r.height-6)/(r.width-6))))}};
 H.fit=function(cv,w,h){const st=document.getElementById('stage');const r=st.getBoundingClientRect();const pad=o=>o;const pd=r.width<700?4:16;let s=Math.min((r.width-pd)/w,(r.height-pd)/h);if(!(s>0))s=1;cv.style.width=w*s+'px';cv.style.height=h*s+'px';const d=Math.min(devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return s};
 })();
+
+// 游戏页图标 / 主题色（与大厅一致）
+(function(){try{const h=document.head;if(!h||window.__inBundle||location.protocol==='about:'||document.querySelector('link[rel=icon]'))return;const l=document.createElement('link');l.rel='icon';l.type='image/svg+xml';l.href='../icons/icon.svg';h.appendChild(l);const m=document.createElement('meta');m.name='theme-color';m.content='#0b0820';h.appendChild(m)}catch(e){}})();

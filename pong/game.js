@@ -30,7 +30,7 @@ function draw(){const A=Art,tm=performance.now();x.save();if(shake>0){x.translat
  parts=parts.filter(p=>(p.x+=p.vx,p.y+=p.vy,p.l--)>0);parts.forEach(p=>{x.globalAlpha=p.l/25;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,2,0,7);x.fill()});x.globalAlpha=1;PS.draw(x);
  A.text(x,MODES[mode]+' · 先得 7 分获胜',W/2,H/2+76,12,'rgba(230,234,255,.6)',{w:600,shadow:false});x.restore();x.textAlign='left'}
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(3,(t-last)/16.67);last=t;if(Hub.active())update(dt);draw()}
-Hub.init({id:'pong',title:'霓虹乒乓',help:'下方青色球拍是你：←→ 或 鼠标/手指拖动下半屏。双人模式：上方玩家用 A/D 或拖动上半屏。击球位置越靠边，反弹角度越大，球会越来越快。先得 7 分获胜。<br>选择模式：',onStart(){reset()},onResume(){last=performance.now()}});
+Hub.init({duo:()=>mode===0,id:'pong',title:'霓虹乒乓',help:'下方青色球拍是你：←→ 或 鼠标/手指拖动下半屏。双人模式：上方玩家用 A/D 或拖动上半屏。击球位置越靠边，反弹角度越大，球会越来越快。先得 7 分获胜。<br>选择模式：',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
 {const row=document.createElement('div');row.className='row';const m=()=>{row.innerHTML=MODES.map((n,i)=>`<button class="btn${i===mode?' on':''}" data-d="${i}">${n}</button>`).join('')};m();
  row.onclick=e=>{const d=e.target.dataset.d;if(d!=null){mode=+d;localStorage.setItem('pong_mode',d);m();Hub.sfx('click')}};Hub.$st.insertBefore(row,Hub.$st.querySelector('.row'));

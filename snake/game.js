@@ -42,7 +42,7 @@ function draw(t){const A=Art;A.bg(x,W*C,Hh*C,t,{stars:40});
   if(Hub.running&&acc<1&&!over){}A.text(x,mode===1?'P1 '+Hub.keyHint(1).split(' + ')[0]+'   ·   P2 '+Hub.keyHint(2).split(' + ')[0]:'',W*C/2,Hh*C-10,10,'rgba(230,234,255,.45)',{w:700,shadow:false})}
  PS.draw(x);A.vignette(x,W*C,Hh*C,.45)}
 function loop(t){requestAnimationFrame(loop);if(Hub.active()){acc+=Math.min(100,t-last);while(acc>=speed&&Hub.active()&&!over){acc-=speed;step()}}last=t;draw(t)}
-Hub.init({id:'snake',title:'贪吃蛇',help:'方向键 / WASD / 滑动控制方向。吃绿色能量+10，金色奖励+50（会消失！）。越吃越快，别撞墙或自己。',onStart(){reset()},onResume(){last=performance.now()}});
+Hub.init({duo:()=>mode===1,id:'snake',title:'贪吃蛇',help:'方向键 / WASD / 滑动控制方向。吃绿色能量+10，金色奖励+50（会消失！）。越吃越快，别撞墙或自己。',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
 const DIRS={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};
 addEventListener('keydown',e=>{if(!Hub.active())return;if(!mode){const k=DIRS[e.key]||{a:'left',d:'right',w:'up',s:'down'}[e.key.toLowerCase()];if(k){e.preventDefault();turn(k,0)}return}

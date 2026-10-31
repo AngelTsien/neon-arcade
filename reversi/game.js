@@ -41,7 +41,7 @@ function draw(){if(!b)return;const A=Art,t=performance.now();x.clearRect(0,0,W,H
  x.save();x.translate(M+10,y);disc(0,0,1,11);x.restore();A.text(x,(diff===3?'黑  ':'你  ')+count(b,1),M+30,y,18,'#fff',{align:'left'});x.save();x.translate(W-M-10,y);disc(0,0,2,11);x.restore();A.text(x,count(b,2)+(diff===3?'  白':'  AI'),W-M-30,y,18,'#fff',{align:'right'});
  A.text(x,mt>0?(mt--,mtxt):think?'AI 思考中…':diff===3?'双人对战 · '+(turn===1?'黑方落子':'白方落子'):'['+DN[diff]+'] '+(turn===1?'轮到你（黑子）':''),W/2,y+38,14,'#cfd6ff',{w:600})}
 (function loop(){requestAnimationFrame(loop);draw()})();
-Hub.init({id:'reversi',title:'黑白棋',scoreLabel:'棋子',help:'你执黑子先行。落子必须夹住对方棋子，被夹住的会翻转成你的颜色。棋盘下满或双方都无处可下时，棋子多者胜。小圆点为可落子位置。键盘：方向键 + 空格。获胜积分 = 棋子数×10×难度倍率。<br>选择 AI 难度：',onStart(){reset();Hub.setScore(2)}});
+Hub.init({duo:()=>diff===3,id:'reversi',title:'黑白棋',scoreLabel:'棋子',help:'你执黑子先行。落子必须夹住对方棋子，被夹住的会翻转成你的颜色。棋盘下满或双方都无处可下时，棋子多者胜。小圆点为可落子位置。键盘：方向键 + 空格。获胜积分 = 棋子数×10×难度倍率。<br>选择 AI 难度：',onStart(){reset();Hub.setScore(2)}});
 reset();
 {const row=document.createElement('div');row.className='row';const mk=()=>{row.innerHTML=DN.map((n,i)=>`<button data-d="${i}" class="btn${i===diff?' on':''}">${n}</button>`).join('')};mk();
  row.onclick=e=>{const d=e.target.dataset.d;if(d!=null){diff=+d;localStorage.setItem('reversi_diff',d);mk();Hub.sfx('click')}};Hub.$st.insertBefore(row,Hub.$st.querySelector('.row'));

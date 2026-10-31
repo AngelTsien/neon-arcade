@@ -22,7 +22,7 @@ const css=document.createElement('style');css.textContent=`
 .pb.w{width:100%}.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
 .step{display:flex;align-items:center;gap:6px}.step b{min-width:38px;text-align:center;font-size:22px;font-variant-numeric:tabular-nums}.step .pb{width:44px;padding:8px 0;font-size:20px}
 .seg{display:flex;gap:4px;flex-wrap:wrap;background:rgba(0,0,0,.25);padding:3px;border-radius:13px}.seg .pb{border:none;background:transparent;padding:8px 12px;min-height:38px}.seg .pb.on{background:linear-gradient(180deg,#8b7bff,#5e6bff)}
-.big{font-size:clamp(34px,10vw,60px);font-weight:900;text-align:center;letter-spacing:2px;line-height:1.15;word-break:break-word;background:linear-gradient(180deg,#fff,#ffe9a8 60%,#ffcf5c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 20px rgba(255,207,92,.35))}
+.big:not(.btn){font-size:clamp(34px,10vw,60px);font-weight:900;text-align:center;letter-spacing:2px;line-height:1.15;word-break:break-word;background:linear-gradient(180deg,#fff,#ffe9a8 60%,#ffcf5c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 20px rgba(255,207,92,.35))}
 .mid{font-size:20px;font-weight:800;text-align:center}.dim{color:#8b96c9;font-size:13px;text-align:center}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font-weight:700;font-size:14px}
 .dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}

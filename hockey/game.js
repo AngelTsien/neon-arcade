@@ -53,5 +53,5 @@ function draw(){const A=Art,tm=performance.now();x.save();if(shake>0){x.translat
  PS.draw(x);FL.draw(x);x.restore()}
 let last=performance.now();(function loop(t){requestAnimationFrame(loop);const dt=Math.min(3,(t-last)/16.67);last=t;if(Hub.active()&&pk)update(dt);draw()})(last);
 const MODES=()=>[[0,L('双人对战','2 players','2 giocatori')],[1,'AI '+L('简单','Easy','Facile')],[2,'AI '+L('普通','Normal','Normale')],[3,'AI '+L('困难','Hard','Difficile')]];
-Hub.init({id:'hockey',title:'双人冰球',theme:'sport',cat:'party',help:'桌上冰球：把冰球打进对方球门，先得 7 分获胜。双人模式下，手机平放，两人各用手指控制自己半场的球拍（支持多点触控）；键盘 P1 = WASD，P2 = 方向键（可在设置中修改）。也可以和三档 AI 对战。',onStart(){reset()}});
+Hub.init({duo:()=>mode===0,id:'hockey',title:'双人冰球',theme:'sport',cat:'party',help:'桌上冰球：把冰球打进对方球门，先得 7 分获胜。双人模式下，手机平放，两人各用手指控制自己半场的球拍（支持多点触控）；键盘 P1 = WASD，P2 = 方向键（可在设置中修改）。也可以和三档 AI 对战。',onStart(){reset()}});
 (function(){const st=document.getElementById('ov-start');const el=document.createElement('div');el.className='row';const r=()=>{el.innerHTML=MODES().map(([v,n])=>`<button class="btn ${v===mode?'on':''}" data-m="${v}">${n}</button>`).join('')};r();st.insertBefore(el,st.querySelector('.row'));el.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;mode=+b.dataset.m;localStorage.setItem('hockey_mode',mode);r();Hub.sfx('click')});addEventListener('langchange',r)})();

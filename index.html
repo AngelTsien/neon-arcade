@@ -1,4 +1,9 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>霓虹游戏厅 · NEON ARCADE</title>
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="NEON ARCADE 霓虹游戏厅：72 款精心打磨的离线小游戏——街机、棋牌、益智、本地双人与聚会游戏，中文 / English / Italiano，手机电脑都能玩。">
+<meta name="theme-color" content="#0b0820"><meta name="color-scheme" content="dark">
+<meta property="og:type" content="website"><meta property="og:title" content="NEON ARCADE · 霓虹游戏厅"><meta property="og:description" content="72 offline mini-games · arcade, board, puzzle, local 2-player and party games · 中文 / English / Italiano"><meta property="og:image" content="https://angeltsien.github.io/neon-arcade/icons/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml"><link rel="icon" href="icons/icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="NEON ARCADE">
+<title>霓虹游戏厅 · NEON ARCADE</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{min-height:100vh;background:linear-gradient(180deg,#0a0d24,#171041 60%,#0e0b2c);color:#eef1ff;font-family:"SF Pro Display","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -35,10 +40,10 @@ footer{position:relative;z-index:1;text-align:center;color:#6a7299;font-size:12p
 footer button{font-family:inherit;background:rgba(40,46,110,.6);border:0;color:#cfd6ff;border-radius:12px;padding:5px 12px;margin-left:8px;cursor:pointer}
 @media(max-width:520px){header{padding:calc(62px + env(safe-area-inset-top)) 10px 10px}.sub{letter-spacing:2px;font-size:12px}main{gap:12px;padding:0 10px}.bd{padding:10px 10px 10px}.ic{width:40px;height:40px;border-radius:12px;left:8px}.ic svg{width:24px;height:24px}.card h2{font-size:15px}.card p{font-size:11px;min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.play{display:none}.tag{font-size:10px;padding:3px 8px;top:6px;right:6px}#filters button{padding:6px 12px;font-size:13px}}
 .gear{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:5;display:flex;gap:6px}.gear button{cursor:pointer;border:0;display:flex;align-items:center;gap:6px;color:#eaf2ff;background:rgba(40,46,110,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;padding:8px 12px;font:700 13px inherit;font-family:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 18px rgba(0,0,0,.3)}.gear button:hover{background:rgba(80,90,180,.8)}
-</style><script src="common/i18n.js"></script><script src="common/hub.js"></script></head><body><canvas id="bg"></canvas>
-<div class="gear"><button id="lng" title="Language">🌐 <span id="lngt">中文</span></button><button id="set" title="设置"></button></div><header><div class="logo"><svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff6ad5"/></linearGradient></defs><rect x="4" y="14" width="56" height="36" rx="18" fill="url(#lg)"/><rect x="4" y="14" width="56" height="18" rx="9" fill="rgba(255,255,255,.18)"/><path d="M18 26v12M12 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="28" r="3.6" fill="#ffcf5c"/><circle cx="50" cy="36" r="3.6" fill="#fff"/></svg><h1>NEON ARCADE</h1></div><div class="sub">霓虹游戏厅 · <b id="gcount">50</b> 款离线小游戏</div></header>
+.about-m{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(5,4,15,.7);backdrop-filter:blur(8px);padding:16px}.about-m .box{max-width:520px;width:100%;max-height:86vh;overflow:auto;background:linear-gradient(160deg,#1b1640,#120e2c);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:22px 22px 18px;color:#e6e2ff;line-height:1.6;font-size:14px}.about-m h2{margin:0 0 10px;font-size:22px;letter-spacing:.06em;background:linear-gradient(90deg,#5ee7ff,#8b7bff,#ff6ad5);-webkit-background-clip:text;color:transparent}.about-m p{margin:0 0 10px}.about-m .cr{opacity:.75;font-size:12.5px}.about-m .btn{margin-top:8px;padding:8px 22px;border-radius:12px;border:0;background:#8b7bff;color:#fff;font-weight:700;cursor:pointer}footer #about{margin-left:6px}.card .th{background:linear-gradient(100deg,rgba(255,255,255,.03) 30%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.03) 70%) 0 0/200% 100%;animation:shim 1.4s linear infinite}.card .th img{transition:opacity .3s}@keyframes shim{to{background-position:-200% 0}}@media (prefers-reduced-motion:reduce){.card .th{animation:none}}</style><script src="common/i18n.js"></script><script src="common/hub.js"></script></head><body><canvas id="bg"></canvas>
+<div class="gear"><button id="lng" title="Language">🌐 <span id="lngt">中文</span></button><button id="ach" title="成就">🏆 <span id="acht"></span></button><button id="set" title="设置"></button></div><header><div class="logo"><svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff6ad5"/></linearGradient></defs><rect x="4" y="14" width="56" height="36" rx="18" fill="url(#lg)"/><rect x="4" y="14" width="56" height="18" rx="9" fill="rgba(255,255,255,.18)"/><path d="M18 26v12M12 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="28" r="3.6" fill="#ffcf5c"/><circle cx="50" cy="36" r="3.6" fill="#fff"/></svg><h1>NEON ARCADE</h1></div><div class="sub">霓虹游戏厅 · <b id="gcount">50</b> 款离线小游戏</div></header>
 <nav id="filters"></nav><main id="g"></main>
-<footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button></footer>
+<footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button> <button id="about">关于 / 制作</button></footer>
 <script>
 const T=v=>(v/60|0)+':'+String(v%60).padStart(2,'0');
 const ICON={chess:'<path d="M16 42h16M18 38h12l-2-12h-8zM20 26c-4-4-2-14 6-16 4 2 6 6 4 10l-6-2"/><circle cx="25" cy="14" r="1"/>',
@@ -64,6 +69,20 @@ undercover:'<circle cx="24" cy="18" r="8"/><path d="M10 40c2-9 26-9 28 0"/><path
 reflex:'<path d="M26 4L12 28h10l-4 16 16-24H24z"/>',
 numbomb:'<circle cx="22" cy="28" r="13"/><path d="M31 18l5-5M36 13l3-1M36 13l1-3"/><path d="M17 28h10M22 23v10" stroke-width="2"/>',
 truth:'<circle cx="24" cy="24" r="17"/><path d="M24 7v34M7 24h34M12 12l24 24M36 12L12 36"/><circle cx="24" cy="24" r="4" fill="currentColor"/>',
+connect4:'<rect x="5" y="9" width="38" height="32" rx="5"/><circle cx="14" cy="18" r="3.5"/><circle cx="24" cy="18" r="3.5"/><circle cx="34" cy="18" r="3.5" fill="currentColor"/><circle cx="14" cy="31" r="3.5" fill="currentColor"/><circle cx="24" cy="31" r="3.5" fill="currentColor"/><circle cx="34" cy="31" r="3.5"/>',
+orbit:'<circle cx="24" cy="30" r="9"/><ellipse cx="24" cy="30" rx="18" ry="7"/><rect x="31" y="8" width="8" height="6" rx="1.5"/>',
+paint:'<path d="M8 28a16 9 0 0 0 32 0z"/><circle cx="16" cy="12" r="4"/><circle cx="26" cy="9" r="4"/><circle cx="34" cy="15" r="4"/>',
+echobat:'<path d="M24 26l-4-6-8 2-6-6 4 12 8-2 6 4 6-4 8 2 4-12-6 6-8-2z"/><path d="M12 36a16 10 0 0 0 24 0M16 41a10 6 0 0 0 16 0"/>',
+snowball:'<circle cx="22" cy="28" r="12"/><path d="M6 44l36-10"/><path d="M36 8v10M31 13h10"/>',
+balloon:'<ellipse cx="24" cy="18" rx="11" ry="13"/><path d="M24 31l-2 3h4zM24 34c3 4-3 6 0 10"/>',
+lighthouse:'<path d="M20 42l2-26h4l2 26zM19 16h10l-5-6z"/><path d="M28 14l14-6M28 18l14 4"/>',
+mirror:'<path d="M24 4v40"/><circle cx="14" cy="30" r="6"/><circle cx="34" cy="30" r="6"/><path d="M8 14l4 4M40 14l-4 4"/>',
+uttt:'<path d="M18 6v36M30 6v36M6 18h36M6 30h36"/><path d="M9 9l6 6M15 9l-6 6"/><circle cx="36" cy="36" r="3.5"/><circle cx="24" cy="24" r="3.5"/>',
+battleship:'<path d="M6 30h36l-5 8H11z"/><path d="M14 30v-6h16v6M22 24v-8h6"/><path d="M4 42c4-2 6 2 10 0s6 2 10 0 6 2 10 0 6 2 10 0"/>',
+quiz:'<rect x="6" y="6" width="36" height="26" rx="6"/><path d="M19 15a5 5 0 1 1 6 5v3"/><circle cx="25" cy="27" r="1" fill="currentColor"/><path d="M16 38h16M24 32v6"/>',
+colorcards:'<rect x="6" y="10" width="20" height="30" rx="4" transform="rotate(-12 16 25)"/><rect x="22" y="8" width="20" height="30" rx="4" transform="rotate(10 32 23)"/><path d="M28 20l6 6"/>',
+doudizhu:'<rect x="8" y="8" width="22" height="32" rx="4"/><path d="M14 16l3-4 3 4 3-4 3 4v6H14z"/><rect x="20" y="12" width="22" height="32" rx="4" opacity=".6"/>',
+soccer:'<rect x="8" y="4" width="32" height="40" rx="4"/><path d="M8 24h32"/><circle cx="24" cy="24" r="6"/><path d="M18 4v6h12V4M18 44v-6h12v6"/>',
 hockey:'<rect x="8" y="4" width="32" height="40" rx="8"/><path d="M8 24h32"/><circle cx="24" cy="14" r="4"/><circle cx="24" cy="34" r="6"/><circle cx="30" cy="22" r="2.4" fill="currentColor"/>',
 charades:'<circle cx="24" cy="10" r="5"/><path d="M24 15v14M24 29l-7 12M24 29l7 12M24 19l-10-6M24 19l10 4"/>',
 draw:'<path d="M8 40l4-12L32 8l8 8-20 20z"/><path d="M28 12l8 8"/><path d="M8 40l8-4"/>',
@@ -158,7 +177,21 @@ const GAMES=[
 ['truth','真心话大冒险','转盘选人，三语题库','#ff6b8b','#ffcf5c','多人'],
 ['numbomb','数字炸弹','轮流猜数，猜中就爆炸','#ff8a3d','#ff4d6d','多人'],
 ['reflex','快速反应对决','2–4 人角落抢拍','#5ee7ff','#4dffc3','多人'],
-['hockey','双人冰球','同屏双人或对战 AI','#3fa8ff','#ff6b8b','多人']];
+['hockey','双人冰球','同屏双人或对战 AI','#3fa8ff','#ff6b8b','多人'],
+['soccer','双人足球','前锋+自动门将 · 金球加时','#36a85a','#3fa8ff','多人'],
+['colorcards','彩牌乐','同色同数出牌 · AI 或传递','#ff4d6d','#3fa8ff','多人'],
+['quiz','抢答王','三语知识问答 · 2–4 人抢答','#ffcf5c','#ff6b8b','多人'],
+['doudizhu','斗地主','叫分抢地主 · 2 个 AI 对手','#c2304f','#ffcf5c','棋类'],
+['connect4','四子棋','连成四子 · AI 或双人','#ff4d6d','#4a5cff','棋类'],
+['uttt','超级井字棋','九宫套九宫 · 蒙特卡洛 AI','#5ee7ff','#ff6ad5','棋类'],
+['orbit','轨道快递','绕行星公转 · 点击切线飞出','#ff9a8b','#9b5cff','休闲'],
+['paint','调色师','滴颜料调出目标色','#ff4d6d','#ffcf3a','益智'],
+['echobat','回声蝙蝠','漆黑洞穴 · 声呐照路','#b9a7ff','#5a3aff','动作'],
+['snowball','雪球滚滚','越滚越大 · 尺寸门','#cfe3ff','#3a7ac8','动作'],
+['balloon','气球胆量王','按住打气 · 见好就收','#ff4d6d','#ffcf5c','多人'],
+['lighthouse','灯塔守夜人','光束引航 · 避开暗礁','#ffe9a0','#2a4a7a','策略'],
+['mirror','镜像双子','日夜双子镜像移动','#ff8a4a','#7a8cff','动作'],
+['battleship','海战棋','布阵开炮 · AI 或传递双人','#4dd7ff','#2a33a8','策略']];
 document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('gcount');if(e)e.textContent=GAMES.length});
 const CATS=['全部',...new Set(GAMES.map(g=>g[5]))];let cat='全部';
 const g=document.getElementById('g'),fb=document.getElementById('filters');
@@ -169,6 +202,7 @@ function render(){g.innerHTML='';let i=0;GAMES.forEach(([d,n,desc,c,c2,tag,keys]
 fb.onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;sessionStorage.setItem('hub_cat',c);render()}};cat=sessionStorage.getItem('hub_cat')||'全部';if(!CATS.includes(cat))cat='全部';render();
 document.getElementById('set').innerHTML=Hub.gearSVG;const LN={zh:'中文',it:'Italiano',en:'English'};const upL=()=>{document.getElementById('lngt').textContent=LN[I18N.lang]};upL();
 document.getElementById('lng').onclick=()=>{const o=['zh','it','en'];I18N.set(o[(o.indexOf(I18N.lang)+1)%3]);upL()};
+localStorage.setItem('hub_total',GAMES.length);const upA=()=>{const g=Hub.achGot();document.getElementById('acht').textContent=Object.keys(g).length+'/'+Hub.ACH.length};upA();document.getElementById('ach').onclick=()=>{Hub.openAch()};setTimeout(()=>{Hub.checkAch();upA()},800);
 document.getElementById('set').onclick=()=>Hub.openSettings({games:GAMES.map(g=>[g[0],g[1]]),onLang:upL,onReset:render});
 document.getElementById('clr').onclick=()=>{if(confirm(I18N.t('确定清除所有游戏的最高分记录？'))){Object.keys(localStorage).filter(k=>k.startsWith('hub_best_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
 if(window.BUNDLE){document.addEventListener('click',e=>{const a=e.target.closest('.card');if(!a)return;e.preventDefault();const d=a.getAttribute('href').split('/')[0];const html=BUNDLE[d];if(!html)return;const f=document.createElement('iframe');f.id='gf';f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:99;background:#070712';f.setAttribute('allow','autoplay');f.srcdoc=html;document.body.appendChild(f);history.pushState({g:d},'');f.onload=()=>f.contentWindow.focus()});
@@ -179,4 +213,7 @@ const BL=[['#8b7bff',.35,.2,.3],['#ff6ad5',.22,.8,.25],['#3fd8ff',.2,.5,.8],['#f
 (function f(t){requestAnimationFrame(f);if(document.hidden)return;x.clearRect(0,0,W,H);x.globalCompositeOperation='lighter';
  BL.forEach(([c,a,bx,by],i)=>{const X=W*(bx+.08*Math.sin(t/7000+i*2)),Y=H*(by+.06*Math.cos(t/9000+i)),R=Math.max(W,H)*.45;const g=x.createRadialGradient(X,Y,0,X,Y,R);const h=c.match(/\w\w/g).map(v=>parseInt(v,16)).join(',');g.addColorStop(0,`rgba(${h},${a})`);g.addColorStop(1,`rgba(${h},0)`);x.fillStyle=g;x.fillRect(0,0,W,H)});
  x.globalCompositeOperation='source-over';st.forEach(s=>{x.fillStyle=`rgba(255,255,255,${.25+.45*Math.sin(t/900+s.p)**2})`;x.fillRect(s.x,s.y,s.s,s.s)})})(0);
+document.getElementById('about').onclick=()=>{const T=(z,e,i)=>Hub.L(z,e,i);const d=document.createElement('div');d.className='hub-modal about-m';d.innerHTML=`<div class="box"><h2>NEON ARCADE</h2><p>${T('霓虹游戏厅是一组完全离线、无广告、无追踪的网页小游戏合集。全部画面由代码实时绘制，全部音效和背景音乐由 WebAudio 实时合成，不加载任何外部资源。','NEON ARCADE is a collection of fully offline web mini-games with no ads and no tracking. Every frame is drawn in code and every sound and music track is synthesised live with WebAudio — no external assets are loaded.','NEON ARCADE è una raccolta di minigiochi web completamente offline, senza pubblicità né tracciamento. Ogni immagine è disegnata dal codice e ogni suono e musica è sintetizzato dal vivo con WebAudio, senza risorse esterne.')}</p><p>${T('游戏数量','Games','Giochi')}: <b>${GAMES.length}</b> · ${T('语言','Languages','Lingue')}: 中文 · English · Italiano</p><p>${T('纪录、成就和设置只保存在本机浏览器中。','Records, achievements and settings are stored only in this browser.','Record, obiettivi e impostazioni restano solo in questo browser.')}</p><p>${T('在手机浏览器中选择“添加到主屏幕”即可像 App 一样离线安装。','On a phone, choose “Add to Home Screen” to install it as an offline app.','Sul telefono scegli “Aggiungi a schermata Home” per installarlo come app offline.')}</p><p class="cr">${T('设计与制作','Design & code','Design e codice')}: Angel &amp; Grok Bot<br>${T('经典玩法致敬其原作者；原创游戏：轨道快递、调色师、回声蝙蝠、雪球滚滚、气球胆量王、灯塔守夜人、镜像双子。','Classic games are tributes to their original designers. Original designs: Orbit Courier, Paint Mixer, Echo Bat, Snowball Rush, Balloon Nerve, Lighthouse Keeper, Mirror Twins.','I classici sono omaggi ai loro autori originali. Giochi originali: Corriere Orbitale, Il Coloritore, Pipistrello Eco, Valanga, Palloncino Coraggioso, Il Guardiano del Faro, Gemelli Specchio.')}</p><button class="btn" id="abx">OK</button></div>`;document.body.appendChild(d);const c=()=>d.remove();d.onclick=e=>{if(e.target===d||e.target.id==='abx')c()};addEventListener('keydown',function k(e){if(e.key==='Escape'){c();removeEventListener('keydown',k)}})};
+if(/^https?:$/.test(location.protocol)){const ml=document.createElement('link');ml.rel='manifest';ml.href='manifest.webmanifest';document.head.appendChild(ml)}
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!window.BUNDLE)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>

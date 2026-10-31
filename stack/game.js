@@ -11,10 +11,19 @@ function drop(){if(!Hub.active())return;const t=tower[tower.length-1],a=Math.max
 function update(dt){if(mv){mv.x+=sp*dir*dt;if(mv.x+mv.w>W+40)dir=-1;if(mv.x<-40)dir=1}
  const target=Math.max(0,tower.length-10)*BH;cam+=(target-cam)*.1*dt}
 const sy=i=>H-80-(i+1)*BH+cam;
-function block(X,Y,w,c,a=1){x.globalAlpha=a;if(w>2)Art.tile(x,X,Y,w,BH-2,Math.min(8,w/2),c.startsWith('hsl')?hsl2hex(c):c,{depth:6});x.globalAlpha=1}
+function block(X,Y,w,c,a=1){x.globalAlpha=a;if(w>2){const hc=c.startsWith('hsl')?hsl2hex(c):c;x.fillStyle='rgba(0,0,0,.25)';x.fillRect(X+3,Y+4,w,BH-2);x.fillStyle=hc;x.fillRect(X,Y,w,BH-2);x.fillStyle='rgba(255,255,255,.22)';x.fillRect(X,Y,w,3);x.fillStyle='rgba(0,0,0,.18)';x.fillRect(X,Y+BH-6,w,4);
+ // 楼层窗户：有的亮灯有的暗
+ const n=Math.floor((w-8)/14);for(let k=0;k<n;k++){const wx=X+6+k*14+((w-12)-n*14)/2,lit=((Math.floor(X)+k*7+Math.floor(Y/BH)*3)%5)<3;x.fillStyle=lit?'rgba(255,236,170,.9)':'rgba(20,20,50,.45)';x.fillRect(wx,Y+7,8,BH-17)}}x.globalAlpha=1}
 function hsl2hex(c){const m=c.match(/[\d.]+/g).map(Number);const h=m[0]%360,s=m[1]/100,l=m[2]/100;const f=n=>{const k=(n+h/30)%12,a=s*Math.min(l,1-l);return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,'0')};return '#'+f(0)+f(8)+f(4)}
-function draw(){const A=Art,tm=performance.now();const h=(tower?tower.length*5:0)%360;const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,`hsl(${h+235},55%,14%)`);g.addColorStop(.6,`hsl(${h+270},50%,24%)`);g.addColorStop(1,`hsl(${h+310},55%,34%)`);x.fillStyle=g;x.fillRect(0,0,W,H);
- for(let i=0;i<40;i++){const sx=(i*137)%W,sy0=((i*91)%H+(tower?tower.length*3:0))%H;x.fillStyle=`rgba(255,255,255,${.15+.25*Math.sin(tm/700+i)**2})`;x.fillRect(sx,sy0,2,2)}
+function draw(){const A=Art,tm=performance.now();const h=(tower?tower.length*5:0)%360;const tl=tower?tower.length:0,k=Math.min(1,tl/40);const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,`hsl(${210+k*40},${60-k*20}%,${62-k*52}%)`);g.addColorStop(.7,`hsl(${200+k*60},${55-k*15}%,${72-k*50}%)`);g.addColorStop(1,`hsl(${30+k*250},${70-k*20}%,${78-k*48}%)`);x.fillStyle=g;x.fillRect(0,0,W,H);
+ const lv=tower?tower.length:0,sky=Math.min(1,lv/40);
+ for(let i=0;i<40;i++){const sx=(i*137)%W,sy0=((i*91)%H+lv*3)%H;x.fillStyle=`rgba(255,255,255,${(.15+.25*Math.sin(tm/700+i)**2)*sky})`;x.fillRect(sx,sy0,2,2)}
+ // 云层（10–35 层之间飘过）
+ for(let i=0;i<6;i++){const cy=((i*173+lv*BH*.6)%(H+200))-100,cx=((i*211+tm/(40+i*8))%(W+160))-80,a=Math.max(0,1-Math.abs(lv-20)/18)*.5;if(a<=0)continue;x.fillStyle=`rgba(255,255,255,${a})`;for(const[dx,dy,r]of[[0,0,22],[20,-8,18],[38,0,20],[18,6,20]]){x.beginPath();x.arc(cx+dx,cy+dy,r,0,7);x.fill()}}
+ // 地面城市剪影（开局可见，随楼升高下沉）
+ const gy=H-80+cam-(-BH);if(gy<H+120){x.fillStyle='rgba(20,14,50,.85)';for(let i=0;i<12;i++){const bw=30+(i*37)%30,bh=40+(i*53)%90,bx=(i*41)%W-10;x.fillRect(bx,gy-bh+40,bw,bh+200)}x.fillStyle='rgba(255,220,140,.5)';for(let i=0;i<40;i++){const bx=(i*29)%W,by=gy+30-((i*17)%110);if((i*7)%3)x.fillRect(bx,by,3,4)}}
+ // 高空：月亮和行星
+ if(lv>30){x.globalAlpha=Math.min(1,(lv-30)/15);x.fillStyle='#f4ecd0';x.beginPath();x.arc(W*.78,H*.2,26,0,7);x.fill();x.fillStyle='rgba(0,0,0,.12)';x.beginPath();x.arc(W*.78+8,H*.2-6,6,0,7);x.arc(W*.78-9,H*.2+8,4,0,7);x.fill();x.globalAlpha=1}
  if(!tower)return;tower.forEach((t,i)=>{const Y=sy(i);if(Y>H+40||Y<-40)return;block(t.x,Y,t.w,col(i))});
  if(flashT>0){flashT--;const t=tower[tower.length-1];x.strokeStyle=`rgba(255,255,255,${flashT/20})`;x.lineWidth=3;A.rr(x,t.x-flashT,sy(tower.length-1)-flashT/2,t.w+flashT*2,BH+flashT,8);x.stroke();x.lineWidth=1}
  if(mv&&Hub.running){x.fillStyle='rgba(255,255,255,.06)';x.fillRect(mv.x,sy(tower.length)+BH,mv.w,H);block(mv.x,sy(tower.length),mv.w,col(tower.length))}

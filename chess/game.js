@@ -63,7 +63,7 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'ch
  if(promo){x.fillStyle='rgba(8,10,30,.7)';x.fillRect(BX,BY,BW,BW);A.panel(x,W/2-150,BY+BW/2-60,300,120,20);A.text(x,'选择升变棋子',W/2,BY+BW/2-38,15,'#fff');'QRBN'.forEach((q,i)=>{const X=W/2-120+i*62;x.fillStyle='rgba(255,255,255,.1)';A.rr(x,X,BY+BW/2-20,54,62,12);x.fill();piece(q,X+27,BY+BW/2+12,54,true)})}
  PS.draw(x);FL.draw(x)}
 let last=performance.now();function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;if(Hub.active())update(dt);draw()}
-Hub.init({id:'chess',title:'国际象棋',help:'完整国际象棋规则：王车易位、吃过路兵、兵升变（可选后/车/象/马）、将军/将死/逼和，以及五十回合、三次重复局面和子力不足和棋。你执白先行，点击棋子查看可走位置（圆点），再点击目标格。顶部切换 AI 难度（入门/进阶/大师，α-β 搜索）。可悔棋。键盘：方向键移动光标，空格/回车选择，U 悔棋。胜利得分随难度提高。',onStart(){reset()},onResume(){last=performance.now()}});
+Hub.init({duo:()=>pc==='h',id:'chess',title:'国际象棋',help:'完整国际象棋规则：王车易位、吃过路兵、兵升变（可选后/车/象/马）、将军/将死/逼和，以及五十回合、三次重复局面和子力不足和棋。你执白先行，点击棋子查看可走位置（圆点），再点击目标格。顶部切换 AI 难度（入门/进阶/大师，α-β 搜索）。可悔棋。键盘：方向键移动光标，空格/回车选择，U 悔棋。胜利得分随难度提高。',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
 function pt(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]}
 cv.addEventListener('pointerdown',e=>{const[X,Y]=pt(e);if(promo){const i=Math.floor((X-(W/2-120))/62);if(Y>BY+BW/2-20&&Y<BY+BW/2+42&&i>=0&&i<4){const m=promo.ms.find(m=>m.pr==='QRBN'[i]);promo=null;sel=-1;moves=[];doMove(m)}else promo=null;return}
