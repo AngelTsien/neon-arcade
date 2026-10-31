@@ -1,6 +1,6 @@
-const cv=document.getElementById('c'),x=cv.getContext('2d'),W=480,H=720,LN=4,LW=100,LX=(W-LW*LN)/2,HY=600,KEYS=['d','f','j','k'],LC=['#ff3366','#00f0ff','#00ff88','#ffe600'];
-let notes,score,combo,maxC,hp,t0,last,bpm,beatT,nextBeat,flash,judg,parts,press=[0,0,0,0],travel,pat=0,songT=0;
-function fit(){Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+const cv=document.getElementById('c'),x=cv.getContext('2d'),W=480,H0=720,LN=4,LW=100,LX=(W-LW*LN)/2,KEYS=['d','f','j','k'],LC=['#ff3366','#00f0ff','#00ff88','#ffe600'];
+let H=H0,HY=600,notes,score,combo,maxC,hp,t0,last,bpm,beatT,nextBeat,flash,judg,parts,press=[0,0,0,0],travel,pat=0,songT=0;
+function fit(){H=Hub.flex(W,H0).H;HY=H-120;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 function reset(){notes=[];score=0;combo=0;maxC=0;hp=100;songT=0;bpm=100;nextBeat=1.2;flash=[0,0,0,0];judg=null;parts=[];travel=1.6;pat=0;last=performance.now()}
 const NOTES=[262,294,330,392,440,523,587,659];
 function genBeat(bt){const step=60/bpm/2;pat++;const r=Math.random(),lane=Math.random()*LN|0;

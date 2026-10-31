@@ -1,5 +1,5 @@
 const N=4,B=document.getElementById('board');let g,score,won,busy=false;
-const st=document.createElement('style');st.textContent=`#board{position:relative;width:min(96vw,calc(100vh - 110px),500px);aspect-ratio:1;background:linear-gradient(180deg,#262c6e,#141640);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18),inset 0 -6px 0 rgba(0,0,0,.3),0 0 0 1px rgba(160,180,255,.15)}
+const st=document.createElement('style');st.textContent=`#board{position:relative;width:min(96vw,calc(100vh - 250px),500px);aspect-ratio:1;background:linear-gradient(180deg,#262c6e,#141640);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18),inset 0 -6px 0 rgba(0,0,0,.3),0 0 0 1px rgba(160,180,255,.15)}
 .cell,.tile{position:absolute;width:21.5%;height:21.5%;border-radius:14px}.cell{background:rgba(8,10,34,.55);box-shadow:inset 0 3px 6px rgba(0,0,0,.45)}
 .tile{display:flex;align-items:center;justify-content:center;font-weight:900;transition:left .11s cubic-bezier(.2,.8,.3,1),top .11s cubic-bezier(.2,.8,.3,1);color:#fff;font-size:min(9vw,44px);text-shadow:0 2px 0 rgba(0,0,0,.25);font-family:"SF Pro Display","PingFang SC","Microsoft YaHei",system-ui,sans-serif;letter-spacing:-1px}
 .tile.n{animation:pop .2s cubic-bezier(.3,1.6,.5,1)}.tile.m{animation:mg .2s}@keyframes pop{from{transform:scale(0)}}@keyframes mg{50%{transform:scale(1.16)}}`;document.head.appendChild(st);
@@ -23,3 +23,16 @@ g=[...Array(N)].map(()=>Array(N).fill(null));draw();
 const K={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',A:'left',D:'right',W:'up',S:'down'};
 addEventListener('keydown',e=>{if(K[e.key]){e.preventDefault();move(K[e.key])}});
 Hub.swipe(document.body,d=>{if(d!=='tap')move(d)});
+;(function(){const st=document.getElementById('stage');st.style.flexDirection='column';st.style.gap='14px';
+const css=document.createElement('style');css.textContent=`#top48,#tip48{width:min(96vw,calc(100vh - 250px),500px);display:flex;gap:10px;align-items:stretch}
+#top48 .bx{flex:1;border-radius:16px;padding:8px 10px;text-align:center;background:linear-gradient(180deg,rgba(40,46,110,.85),rgba(16,18,52,.92));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.35)}
+#top48 .bx small{display:block;font-size:11px;color:#9aa3c8;font-weight:700;letter-spacing:2px}#top48 .bx b{font-size:24px;font-weight:900;color:#fff;font-family:"SF Pro Display",system-ui,sans-serif}
+#top48 .logo{flex:1.1;display:grid;place-items:center;border-radius:16px;font-size:30px;font-weight:900;color:#2a2f6a;background:linear-gradient(160deg,#fff,#b9c0ff);box-shadow:inset 0 2px 0 #fff,inset 0 -5px 0 rgba(0,0,0,.18),0 8px 20px rgba(0,0,0,.35)}
+#tip48{flex-direction:column;gap:8px}#tip48 .bar{height:10px;border-radius:5px;background:rgba(0,0,0,.35);overflow:hidden}#tip48 .bar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#5ee7ff,#8b7bff,#ff6ad5);transition:width .3s}
+#tip48 .row2{display:flex;justify-content:space-between;color:#9aa3c8;font-size:12px;font-weight:600}
+@media (min-height:700px) and (max-width:700px){#top48 .bx b{font-size:28px}#top48 .bx{padding:12px 10px}}
+@media (max-height:640px){#tip48{display:none}}`;document.head.appendChild(css);
+const top=document.createElement('div');top.id='top48';top.innerHTML='<div class="logo">2048</div><div class="bx"><small>分数</small><b id="s48">0</b></div><div class="bx"><small>最佳</small><b id="b48">0</b></div>';
+const tip=document.createElement('div');tip.id='tip48';tip.innerHTML='<div class="bar"><i id="p48"></i></div><div class="row2"><span>最大方块 <b id="m48" style="color:#ffcf5c">2</b></span><span>目标 2048</span></div><div class="row2" style="justify-content:center;opacity:.7">滑动或方向键合并相同数字</div>';
+st.insertBefore(top,B);st.appendChild(tip);
+setInterval(()=>{document.getElementById('s48').textContent=Hub.score||0;document.getElementById('b48').textContent=Math.max(Hub.best(),Hub.score||0);let m=2;if(g)g.forEach(r=>r.forEach(t=>{if(t&&t.v>m)m=t.v}));document.getElementById('m48').textContent=m;document.getElementById('p48').style.width=Math.min(100,Math.log2(m)/11*100)+'%'},200)})();

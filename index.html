@@ -40,7 +40,17 @@ footer button{font-family:inherit;background:rgba(40,46,110,.6);border:0;color:#
 <footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button></footer>
 <script>
 const T=v=>(v/60|0)+':'+String(v%60).padStart(2,'0');
-const ICON={
+const ICON={chess:'<path d="M16 42h16M18 38h12l-2-12h-8zM20 26c-4-4-2-14 6-16 4 2 6 6 4 10l-6-2"/><circle cx="25" cy="14" r="1"/>',
+tank:'<rect x="10" y="20" width="28" height="18" rx="3"/><circle cx="24" cy="29" r="5"/><path d="M24 24V8M8 20v18M40 20v18"/>',
+bomber:'<circle cx="22" cy="28" r="12"/><path d="M30 18l5-5M35 13c2-2 5-1 6 1"/><path d="M38 8l1-3M42 10l3-1"/>',
+slingshot:'<path d="M24 42V26M24 26l-8-14M24 26l8-14"/><path d="M16 12c4 8 12 8 16 0"/><circle cx="24" cy="18" r="4"/>',
+ninja:'<circle cx="20" cy="28" r="12"/><path d="M8 40L42 8"/><path d="M20 16c0-4 3-6 6-6"/>',
+mahjong:'<rect x="9" y="8" width="20" height="28" rx="3"/><rect x="19" y="14" width="20" height="28" rx="3"/><path d="M25 24h8M29 20v12"/>',
+onestroke:'<circle cx="10" cy="10" r="3"/><path d="M10 13v12h14V12h14v24H10"/><circle cx="10" cy="36" r="3"/>',
+lightsout:'<rect x="7" y="7" width="14" height="14" rx="3"/><rect x="27" y="7" width="14" height="14" rx="3"/><rect x="7" y="27" width="14" height="14" rx="3"/><circle cx="34" cy="34" r="7"/><path d="M34 22v2M46 34h-2"/>',
+knife:'<circle cx="24" cy="18" r="11"/><path d="M24 30v12M21 30h6"/><path d="M18 12l3 3M30 12l-3 3"/>',
+jump:'<path d="M6 34l10-5 10 5-10 5zM6 34v4l10 5v-4M26 34v4l-10 5"/><circle cx="34" cy="10" r="4"/><path d="M34 14l-2 10M30 28c2-8 8-8 10-14"/>',
+
 '2048':'<rect x="6" y="6" width="16" height="16" rx="3"/><rect x="26" y="6" width="16" height="16" rx="3"/><rect x="6" y="26" width="16" height="16" rx="3"/><rect x="26" y="26" width="16" height="16" rx="3" fill="currentColor" fill-opacity=".35"/>',
 snake:'<path d="M8 36h14a6 6 0 0 0 0-12H18a6 6 0 0 1 0-12h20"/><circle cx="38" cy="12" r="3" fill="currentColor"/><circle cx="10" cy="36" r="2"/>',
 tetris:'<path d="M6 30h12v12H6zM18 30h12v12H18zM30 30h12v12H30zM18 18h12v12H18z"/>',
@@ -78,14 +88,19 @@ const GAMES=[
 ['asteroids','陨石风暴','惯性飞船击碎陨石','#c88cff','#00f0ff','经典'],
 ['pong','霓虹乒乓','AI 三档 + 本地双人','#00f0ff','#ff00e6','经典'],
 ['breakout','打砖块','多关卡＋道具＋多球','#ff3366','#ffaa00','经典'],
+['tank','坦克大战','守护基地，击毁敌军坦克','#ffcf5c','#ff4d6d','经典'],
+['bomber','炸弹人','连锁爆破，寻找出口','#ff6ad5','#ff9900','经典'],
 ['shooter','星际射击','弹幕射击，火力升级','#00f0ff','#ff3366','动作'],
 ['runner','霓虹跑酷','二段跳、滑铲、收金币','#ff2d95','#ffe600','动作'],
 ['subway','三轨酷跑','换道、跳跃、翻滚','#00f0ff','#ff00e6','动作'],
 ['racer','极速赛车','变道超车，氮气加速','#00f0ff','#ff3366','动作'],
 ['pinball','弹珠台','挡板、弹柱、倍率','#ff00e6','#ffe600','动作'],
+['slingshot','愤怒弹弓','拉弓弹射，砸塌小猪堡垒','#ff3d4d','#7ee05a','动作'],
+['ninja','水果忍者','滑动切水果，小心炸弹','#ff9a1c','#ff3d4d','动作'],
 ['xiangqi','中国象棋','完整规则，α-β AI 三档','#ff4d6d','#00f0ff','棋类'],
 ['gomoku','五子棋','α-β 搜索 AI，三档难度','#00ff88','#ff00e6','棋类'],
 ['reversi','黑白棋','翻转对决，三档 AI','#00f0ff','#ff00e6','棋类'],
+['chess','国际象棋','完整规则，α-β AI 三档','#e8d5b0','#8b7bff','棋类'],
 ['towerdef','霓虹塔防','三种防御塔，Boss 波次','#ff9900','#00f0ff','策略'],
 ['klotski','华容道','6 关，含经典横刀立马','#ff3366','#00ff88','策略'],
 ['sokoban','推箱子','8 个精选关卡，可撤销','#ff9900','#00ff88','策略'],
@@ -95,13 +110,18 @@ const GAMES=[
 ['sudoku','数独','三档难度，笔记与提示','#7b8cff','#00f0ff','益智',[['易','sudoku_easy',T],['中','sudoku_mid',T],['难','sudoku_hard',T]]],
 ['memory','记忆翻牌','考验记忆力的 3D 翻牌','#ff9900','#ff00e6','益智'],
 ['lianliankan','连连看','两弯之内连线消除','#00ff88','#ff9900','益智'],
+['mahjong','雀神消除','麻将接龙，层层消除','#4dffc3','#ffcf5c','益智'],
+['onestroke','一笔画','一笔走遍所有格子','#8b7bff','#4dffc3','益智'],
+['lightsout','点灯游戏','点亮全部灯泡的逻辑谜题','#ffe600','#8b7bff','益智'],
 ['merge','合成大西瓜','物理碰撞合成水果','#00e676','#ff3366','休闲'],
 ['stack','叠叠高','精准落块，越叠越高','#00f0ff','#ffe600','休闲'],
 ['rhythm','节奏大师','四轨下落音符','#ff3366','#00ff88','休闲'],
 ['match3','消消乐','三消连锁，30 步冲 3000 分','#ff3366','#ffe600','休闲'],
 ['bubble','泡泡龙','瞄准反弹，同色三连消除','#00f0ff','#c000ff','休闲'],
 ['flappy','霓虹飞鸟','穿越霓虹管道','#ffe600','#ff2d95','休闲'],
-['whack','打地鼠','60 秒手速挑战','#ffe600','#ff3366','休闲']];
+['whack','打地鼠','60 秒手速挑战','#ffe600','#ff3366','休闲'],
+['knife','见缝插针','飞刀插满旋转木桩','#ff9900','#ffe600','休闲'],
+['jump','跳一跳','蓄力跳跃，连续完美','#8b7bff','#ff6b8b','休闲']];
 const CATS=['全部',...new Set(GAMES.map(g=>g[5]))];let cat='全部';
 const g=document.getElementById('g'),fb=document.getElementById('filters');
 function bestOf(d,keys){if(keys)return keys.map(([l,k,f])=>{const b=+localStorage.getItem('hub_best_'+k)||0;return l+' '+(b?f(b):'—')}).join(' · ');const b=+localStorage.getItem('hub_best_'+d)||0;return b?'最佳 '+b:'尚未挑战'}

@@ -1,7 +1,7 @@
-const cv=document.getElementById('c'),x=cv.getContext('2d'),W=420,H=700,TOPL=130,FL=H-20;
+const cv=document.getElementById('c'),x=cv.getContext('2d'),W=420,H0=700;let H=H0,TOPL=130,FL=H-20;
 const FR=[['葡萄',16,'#a24dff'],['樱桃',22,'#ff3366'],['橘子',29,'#ff9900'],['柠檬',35,'#ffe600'],['猕猴桃',42,'#7bdc3a'],['番茄',50,'#ff4d2e'],['桃子',58,'#ff9ad5'],['菠萝',66,'#ffd23f'],['椰子',76,'#e8e0d0'],['半瓜',88,'#ff6b81'],['西瓜',102,'#00e676']];
 let fs,cur,nxt,dropX,cool,score,last,parts,over,best11=0;
-function fit(){Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+function fit(){H=Hub.flex(W,H0).H;TOPL=H-570;FL=H-20;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const rt=()=>Math.random()*5|0;
 function reset(){fs=[];cur=rt();nxt=rt();dropX=W/2;cool=0;score=0;parts=[];over=0;last=performance.now()}
 function drop(){if(!Hub.active()||cool>0)return;const r=FR[cur][1];fs.push({x:Math.max(r+6,Math.min(W-r-6,dropX))+(Math.random()-.5),y:TOPL-60,vx:(Math.random()-.5)*.4,vy:0,t:cur,r,age:0});cur=nxt;nxt=rt();cool=35;Hub.sfx('click')}
@@ -45,6 +45,7 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'m'
   A.panel(x,W-112,6,104,40,20);A.text(x,'下一个',W-78,26,12,'#cfd6ff',{w:600});fruit(W-30,26,nxt,Math.min(15,FR[nxt][1]))}
  fs.forEach(f=>fruit(f.x,f.y,f.t,f.r));
  parts=parts.filter(p=>(p.x+=p.vx,p.y+=p.vy,p.l--)>0);parts.forEach(p=>{x.globalAlpha=p.l/30;x.fillStyle=p.c;x.beginPath();x.arc(p.x,p.y,2.5,0,7);x.fill()});x.globalAlpha=1;PS.draw(x);
+ if(Hub.running&&TOPL>200){A.text(x,String(score),W/2,TOPL-150,56,'#fff',{grad:['#ffffff','#ffd9f0'],glow:'rgba(255,106,213,.45)'});A.text(x,'合成更大的水果',W/2,TOPL-110,13,'#9aa3c8',{w:600})}
  if(over>0)A.text(x,'危险！'+Math.ceil((150-over)/60)+'s',W/2,TOPL-14,18,'#ff4d6d')}
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(2,(t-last)/16.67);last=t;if(Hub.active())update(dt);draw()}
 Hub.init({id:'merge',title:'合成大西瓜',help:'移动并放下水果，两个相同的水果碰在一起会合成更大的水果：葡萄→樱桃→橘子→柠檬→猕猴桃→番茄→桃子→菠萝→椰子→半瓜→西瓜！水果堆过红色虚线并停留 2.5 秒则失败。鼠标/手指 移动位置，松开/点击 放下；键盘 ←→ 移动，空格 放下。',onStart(){reset()},onResume(){last=performance.now()}});
