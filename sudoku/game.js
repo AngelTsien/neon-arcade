@@ -1,15 +1,15 @@
 const st=document.createElement('style');st.textContent=`#wrap{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
-#sb{display:grid;grid-template-columns:repeat(9,1fr);width:min(94vw,calc(100vh - 250px),520px);aspect-ratio:1;border:2px solid #0ff;border-radius:8px;box-shadow:0 0 24px #0ff4;overflow:hidden;background:#0a0a1e}
-.sc2{display:flex;align-items:center;justify-content:center;border:1px solid #ffffff14;font-size:min(5.5vw,30px);cursor:pointer;color:#7ef;font-weight:600;transition:background .12s;position:relative}
-.sc2.g{color:#fff;font-weight:800}.sc2.bR{border-right:2px solid #0ff8}.sc2.bB{border-bottom:2px solid #0ff8}
-.sc2.hl{background:#0ff1}.sc2.same{background:#f0f2}.sc2.sel{background:#0ff4!important;box-shadow:inset 0 0 10px #0ff}.sc2.err{color:#f36!important;animation:sh2 .3s}.sc2.hint{color:#ff0}
+#sb{display:grid;grid-template-columns:repeat(9,1fr);width:min(96vw,calc(100vh - 250px),540px);aspect-ratio:1;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#f6f7ff,#e3e7ff);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 4px #2a2f7a,0 0 0 5px rgba(160,180,255,.3)}
+.sc2{display:flex;align-items:center;justify-content:center;border-right:1px solid #c9cff0;border-bottom:1px solid #c9cff0;font-size:min(6vw,30px);cursor:pointer;color:#3f5bff;font-weight:700;transition:background .12s;position:relative;font-family:"SF Pro Display","PingFang SC",system-ui,sans-serif}
+.sc2.g{color:#1a1d45;font-weight:800}.sc2.bR{border-right:2.5px solid #2a2f7a}.sc2.bB{border-bottom:2.5px solid #2a2f7a}
+.sc2.hl{background:#e4e8ff}.sc2.same{background:#cfd6ff}.sc2.sel{background:linear-gradient(160deg,#8b7bff,#5e6bff)!important;color:#fff!important}.sc2.err{color:#e0304f!important;background:#ffe1e6;animation:sh2 .3s}.sc2.hint{color:#d48a00}
 @keyframes sh2{50%{transform:translateX(3px)}}
-.nt{display:grid;grid-template-columns:repeat(3,1fr);position:absolute;inset:1px;font-size:min(2vw,10px);color:#9ab;font-weight:400}.nt span{display:flex;align-items:center;justify-content:center}
-#np{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;width:min(94vw,520px)}#np button,#tools button{font-size:20px;padding:8px 0}
+.nt{display:grid;grid-template-columns:repeat(3,1fr);position:absolute;inset:1px;font-size:min(2vw,10px);color:#7a80b0;font-weight:500}.nt span{display:flex;align-items:center;justify-content:center}
+#np{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;width:min(94vw,520px)}#np button,#tools button{font-size:20px;padding:10px 0;font-weight:800}#tools button{padding:8px 18px;font-size:15px}
 #tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}#tools .on{background:#0ff4;box-shadow:0 0 10px #0ff}
 #info{font-size:13px;color:#9ab}#info b{color:#f36}`;document.head.appendChild(st);
 const wrap=document.getElementById('wrap');
-wrap.innerHTML='<div id="info">难度 <span id="dn"></span> · 错误 <b id="er">0</b>/3 · 提示剩余 <span id="hn"></span></div><div id="sb"></div><div id="np"></div><div id="tools"><button class="btn" id="tn">✎ 笔记</button><button class="btn" id="te">⌫ 擦除</button><button class="btn" id="th">💡 提示</button></div>';
+wrap.innerHTML='<div id="info">难度 <span id="dn"></span> · 错误 <b id="er">0</b>/3 · 提示剩余 <span id="hn"></span></div><div id="sb"></div><div id="np"></div><div id="tools"><button class="btn" id="tn">笔记</button><button class="btn" id="te">擦除</button><button class="btn" id="th">提示</button></div>';
 const LV={easy:['简单',38],mid:['中等',48],hard:['困难',55]};let lv=localStorage.getItem('sudoku_lv')||'easy';
 let sol,puz,cur,given,notes,sel=null,errs,hints,noteMode=false,t,tm,cells=[];
 const sb=document.getElementById('sb'),np=document.getElementById('np');
@@ -39,7 +39,7 @@ function hint(){if(!Hub.active()||hints<=0)return;let i=sel!=null&&cur[sel]!==so
  hints--;t+=30;cur[i]=sol[i];given[i]=true;notes[i].clear();cells[i].classList.add('hint');sel=i;Hub.sfx('win');render();check()}
 function check(){if(cur.every((v,i)=>v===sol[i])){clearInterval(tm);Hub.gameOver(Math.max(1,t),'胜利！')}}
 function setup(){Hub.id='sudoku_'+lv;Hub.showBest();puz=gen();cur=puz.slice();given=puz.map(v=>v>0);notes=[...Array(81)].map(()=>new Set());errs=0;hints=3;sel=null;t=0;cells.forEach(c=>c.classList.remove('hint'));clearInterval(tm);tm=setInterval(()=>{if(Hub.active()){t++;Hub.setScore(t)}},1000);Hub.setScore(0);render()}
-Hub.init({id:'sudoku_'+lv,title:'数独',scoreLabel:'用时',lowerBetter:true,fmt:v=>(v/60|0)+':'+String(v%60).padStart(2,'0'),help:'每行、每列、每个 3×3 宫都填入 1-9 且不重复。点格子后点数字（或键盘输入），✎笔记模式记候选数。错 3 次失败；每局 3 次提示（每次 +30 秒）。最佳纪录按难度分别保存。<br>选择难度：',onStart(){setup()}});
+Hub.init({id:'sudoku_'+lv,title:'数独',scoreLabel:'用时',lowerBetter:true,fmt:v=>(v/60|0)+':'+String(v%60).padStart(2,'0'),help:'每行、每列、每个 3×3 宫都填入 1-9 且不重复。点格子后点数字（或键盘输入），笔记模式记候选数。错 3 次失败；每局 3 次提示（每次 +30 秒）。最佳纪录按难度分别保存。<br>选择难度：',onStart(){setup()}});
 {const row=document.createElement('div');row.className='row';const mkb=()=>{row.innerHTML=Object.entries(LV).map(([k,v])=>`<button class="btn" data-l="${k}" style="${k===lv?'background:#0ff5;box-shadow:0 0 12px #0ff':''}">${v[0]}</button>`).join('')};mkb();
  row.onclick=e=>{const l=e.target.dataset.l;if(l){lv=l;localStorage.setItem('sudoku_lv',l);Hub.id='sudoku_'+lv;Hub.showBest();mkb();Hub.sfx('click')}};Hub.$st.insertBefore(row,Hub.$st.querySelector('.row'));
  const r2=document.createElement('div');r2.className='row';Hub.$ov.insertBefore(r2,Hub.$ov.querySelector('.row'));const sync=()=>{r2.innerHTML=row.innerHTML};new MutationObserver(sync).observe(row,{childList:true});sync();r2.onclick=row.onclick}

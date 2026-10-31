@@ -12,15 +12,15 @@ function newLevel(){lvl++;gen();time=40+n*n*2;won=0;Hub.sfx('win')}
 function tap(r,c){if(!Hub.active()||won||r<0||c<0||r>=n||c>=n)return;const i=r*n+c;t[i]=rot(t[i]);rotA[i]=-Math.PI/2;Hub.sfx('flip');flow();
  if(lit.size===n*n){won=1;const bonus=Math.round(time)*5+n*n*10;score+=bonus;Hub.setScore(score);Hub.sfx('score');const g0=gid;setTimeout(()=>{if(Hub.running&&g0===gid)newLevel()},1100)}}
 const G=()=>({s:(W-20)/n,ox:10,oy:70});
-function draw(){x.fillStyle='#08081a';x.fillRect(0,0,W,H);if(!t)return;const{s,ox,oy}=G();
- x.fillStyle='#9ab';x.font='15px sans-serif';x.fillText('第 '+lvl+' 关  ·  '+n+'×'+n,12,28);x.textAlign='right';x.fillStyle=time<10?'#f36':'#0ff';x.font='bold 22px sans-serif';x.fillText('⏱ '+Math.max(0,Math.ceil(time)),W-12,30);x.textAlign='left';
- x.fillStyle='#0ff2';x.fillRect(10,44,(W-20)*Math.min(1,lit.size/(n*n)),6);
- for(let r=0;r<n;r++)for(let c=0;c<n;c++){const i=r*n+c,X=ox+c*s,Y=oy+r*s,on=lit.has(i);x.fillStyle=(r+c)%2?'#ffffff07':'#ffffff0d';x.fillRect(X,Y,s,s);
-  rotA[i]*=.7;x.save();x.translate(X+s/2,Y+s/2);x.rotate(rotA[i]);const col=won?`hsl(${(performance.now()/5+i*20)%360},100%,60%)`:on?'#0ff':'#456';x.strokeStyle=x.shadowColor=col;x.shadowBlur=on?14:0;x.lineWidth=s*.2;x.lineCap='round';
-  for(const[dr,dc,b]of D)if(t[i]&b){x.beginPath();x.moveTo(0,0);x.lineTo(dc*s/2,dr*s/2);x.stroke()}
-  if(r===src[0]&&c===src[1]){x.fillStyle='#ff0';x.shadowColor='#ff0';x.shadowBlur=20;x.beginPath();x.arc(0,0,s*.25,0,7);x.fill()}else if(bits(t[i])===1){x.fillStyle=on?'#0f8':'#234';x.beginPath();x.arc(0,0,s*.2,0,7);x.fill()}
-  x.restore();x.shadowBlur=0}
- if(kb&&Hub.active()){x.strokeStyle='#fff';x.lineWidth=2;x.strokeRect(ox+cur[1]*s+2,oy+cur[0]*s+2,s-4,s-4)}}
+function draw(){const A=Art,tm=performance.now();x.clearRect(0,0,W,H);if(!t)return;const{s,ox,oy}=G();
+ A.panel(x,8,6,W-16,48,14);A.text(x,'第 '+lvl+' 关 · '+n+'×'+n,22,24,14,'#cfd6ff',{align:'left',w:700});const tc=time<10?'#ff6b6b':'#5ee7ff';A.text(x,Math.max(0,Math.ceil(time))+'s',W-22,24,20,tc,{align:'right'});x.fillStyle='rgba(0,0,0,.35)';A.rr(x,22,40,W-44,6,3);x.fill();x.fillStyle=tc;A.rr(x,22,40,Math.max(6,(W-44)*Math.min(1,lit.size/(n*n))),6,3);x.fill();
+ x.fillStyle='rgba(0,0,0,.4)';A.rr(x,ox-8,oy-4,n*s+16,n*s+16,14);x.fill();const bg=x.createLinearGradient(0,oy,0,oy+n*s);bg.addColorStop(0,'#262c6e');bg.addColorStop(1,'#141640');x.fillStyle=bg;A.rr(x,ox-8,oy-8,n*s+16,n*s+16,14);x.fill();
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){const i=r*n+c,X=ox+c*s,Y=oy+r*s,on=lit.has(i);x.fillStyle='rgba(8,10,34,.6)';A.rr(x,X+2,Y+2,s-4,s-4,s*.14);x.fill();x.strokeStyle='rgba(255,255,255,.05)';x.lineWidth=1;x.stroke();
+  rotA[i]*=.7;x.save();x.translate(X+s/2,Y+s/2);x.rotate(rotA[i]);const col=won?`hsl(${(tm/5+i*20)%360},100%,65%)`:on?'#5ee7ff':'#3a4278';x.lineCap='round';
+  for(const pass of[0,1,2]){x.lineWidth=pass===0?s*.3:pass===1?s*.2:s*.07;x.strokeStyle=pass===0?'rgba(0,0,0,.45)':pass===1?col:on||won?'rgba(255,255,255,.85)':'rgba(255,255,255,.12)';if(pass===1&&(on||won)){x.shadowColor=col;x.shadowBlur=12}for(const[dr,dc,b]of D)if(t[i]&b){x.beginPath();x.moveTo(0,0);x.lineTo(dc*s/2,dr*s/2);x.stroke()}x.shadowBlur=0}
+  if(r===src[0]&&c===src[1]){A.orb(x,0,0,s*.24,'#ffcf5c',{glow:20+6*Math.sin(tm/200),shadow:false})}else if(bits(t[i])===1){x.fillStyle='#1a1d45';x.beginPath();x.arc(0,0,s*.2,0,7);x.fill();A.orb(x,0,0,s*.15,on?'#4dffc3':'#4a5080',{glow:on?14:0,shadow:false})}
+  x.restore()}
+ if(kb&&Hub.active()){x.strokeStyle='#ffcf5c';x.lineWidth=3;A.rr(x,ox+cur[1]*s+2,oy+cur[0]*s+2,s-4,s-4,s*.14);x.stroke()}}
 function loop(tt){requestAnimationFrame(loop);const dt=(tt-last)/1000;last=tt;if(Hub.active()&&!won&&t){time-=Math.min(dt,.1);if(time<=0){time=0;Hub.gameOver(score,'时间到')}}draw()}
 Hub.init({id:'pipes',title:'霓虹接管',help:'点击方块旋转管道，让中央黄色能量源点亮全部管道（终端绿灯全亮）即过关。关卡越来越大，剩余时间越多奖励越高；超时则游戏结束。键盘：方向键移动，空格旋转。',onStart(){gid++;score=0;lvl=0;newLevel();last=performance.now()},onResume(){last=performance.now()}});
 lvl=0;gen();time=60;requestAnimationFrame(loop);

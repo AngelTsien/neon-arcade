@@ -1,9 +1,10 @@
 const N=4,B=document.getElementById('board');let g,score,won,busy=false;
-const st=document.createElement('style');st.textContent=`#board{position:relative;width:min(92vw,calc(100vh - 90px),480px);aspect-ratio:1;background:#0d0d24;border:2px solid #0ff4;border-radius:14px;box-shadow:0 0 30px #0ff3,inset 0 0 30px #f0f2;padding:2%}
-.cell,.tile{position:absolute;width:21.5%;height:21.5%;border-radius:10px}.cell{background:#ffffff0a}
-.tile{display:flex;align-items:center;justify-content:center;font-weight:800;transition:left .1s,top .1s;color:#fff;font-size:min(8vw,40px)}
-.tile.n{animation:pop .18s}.tile.m{animation:mg .18s}@keyframes pop{from{transform:scale(0)}}@keyframes mg{50%{transform:scale(1.18)}}`;document.head.appendChild(st);
-const col=v=>{const h=[180,200,160,120,60,30,0,320,290,260,220,190][Math.min(11,Math.log2(v)-1)];return `background:hsl(${h},90%,${v>=1024?55:45}%);box-shadow:0 0 ${Math.min(30,6+Math.log2(v)*2)}px hsl(${h},100%,60%)`};
+const st=document.createElement('style');st.textContent=`#board{position:relative;width:min(96vw,calc(100vh - 110px),500px);aspect-ratio:1;background:linear-gradient(180deg,#262c6e,#141640);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.18),inset 0 -6px 0 rgba(0,0,0,.3),0 0 0 1px rgba(160,180,255,.15)}
+.cell,.tile{position:absolute;width:21.5%;height:21.5%;border-radius:14px}.cell{background:rgba(8,10,34,.55);box-shadow:inset 0 3px 6px rgba(0,0,0,.45)}
+.tile{display:flex;align-items:center;justify-content:center;font-weight:900;transition:left .11s cubic-bezier(.2,.8,.3,1),top .11s cubic-bezier(.2,.8,.3,1);color:#fff;font-size:min(9vw,44px);text-shadow:0 2px 0 rgba(0,0,0,.25);font-family:"SF Pro Display","PingFang SC","Microsoft YaHei",system-ui,sans-serif;letter-spacing:-1px}
+.tile.n{animation:pop .2s cubic-bezier(.3,1.6,.5,1)}.tile.m{animation:mg .2s}@keyframes pop{from{transform:scale(0)}}@keyframes mg{50%{transform:scale(1.16)}}`;document.head.appendChild(st);
+const PAL=[['#e9ecff','#b9c0ff','#2a2f6a'],['#d8dcff','#9aa3ff','#22286a'],['#7ff0ff','#2bb8e0'],['#7dffd6','#22c896'],['#a6ff7a','#4fc23a'],['#ffe27a','#f0a81c'],['#ffb36b','#f06a2a'],['#ff8fa3','#e0365a'],['#ff9be6','#d43ab0'],['#c3a6ff','#7a4ff0'],['#9ab4ff','#3f62f0'],['#ffffff','#ffcf5c']];
+const col=v=>{const p=PAL[Math.min(11,Math.log2(v)-1)];return `background:linear-gradient(160deg,${p[0]},${p[1]});color:${p[2]||'#fff'};box-shadow:inset 0 2px 0 rgba(255,255,255,.55),inset 0 -5px 0 rgba(0,0,0,.22),0 6px 14px rgba(0,0,0,.35)${v>=128?`,0 0 ${Math.min(34,Math.log2(v)*3)}px ${p[1]}`:''}`};
 const pos=i=>2+i*24+'%';
 function empty(){const e=[];for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!g[r][c])e.push([r,c]);return e}
 function add(){const e=empty();if(!e.length)return;const[r,c]=e[Math.random()*e.length|0];g[r][c]={v:Math.random()<.9?2:4,id:Math.random(),n:1}}

@@ -1,70 +1,121 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>霓虹游戏厅 · NEON ARCADE</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;background:#05050f;color:#e8f0ff;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;overflow-x:hidden}
-#bg{position:fixed;inset:0;z-index:0}
-header{position:relative;z-index:1;text-align:center;padding:48px 16px 18px}
-h1{font-size:clamp(40px,9vw,92px);font-weight:900;letter-spacing:6px;background:linear-gradient(90deg,#00f0ff,#ff00e6,#ffe600,#00f0ff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 6s linear infinite;filter:drop-shadow(0 0 18px #ff00e688)}
-@keyframes hue{to{background-position:300%}}
-.sub{margin-top:8px;color:#8fa3c8;letter-spacing:8px;font-size:14px}
-.sub b{color:#0ff}
-main{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,44vw),1fr));gap:22px;max-width:1200px;margin:20px auto 60px;padding:0 18px}
-.card{position:relative;display:block;text-decoration:none;color:inherit;border-radius:20px;padding:22px 20px 18px;background:linear-gradient(160deg,#ffffff12,#ffffff04);border:1px solid #ffffff1a;backdrop-filter:blur(8px);overflow:hidden;transition:transform .3s,box-shadow .3s;opacity:0;animation:in .6s forwards}
-.card:before{content:"";position:absolute;inset:-2px;border-radius:22px;padding:2px;background:linear-gradient(135deg,var(--c),transparent 50%,var(--c2));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
-.card:hover,.card:focus{transform:translateY(-8px) scale(1.03);box-shadow:0 18px 40px -10px var(--c),0 0 30px -5px var(--c2);outline:none}
-@keyframes in{from{opacity:0;transform:translateY(30px)}to{opacity:1}}
-.ic{font-size:54px;filter:drop-shadow(0 0 14px var(--c));transition:transform .4s}
-.card:hover .ic{transform:rotate(-8deg) scale(1.15)}
-.card h2{margin-top:10px;font-size:22px}
-.card p{margin-top:6px;color:#8fa3c8;font-size:13px;line-height:1.6;min-height:42px}
-.meta{margin-top:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.best{color:var(--c)}.tag{padding:3px 10px;border-radius:12px;background:var(--c);color:#000;font-weight:700}
-#filters{position:relative;z-index:1;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 12px}#filters button{font-family:inherit;cursor:pointer;border:1px solid #0ff5;background:#0ff1;color:#cfe;border-radius:20px;padding:6px 14px;font-size:14px;transition:.2s}#filters button.on{background:linear-gradient(90deg,#00e5ff,#d500f9);color:#fff;border-color:transparent;box-shadow:0 0 14px #d500f988}
-.meta .best{font-size:11px}
-footer{position:relative;z-index:1;text-align:center;color:#56658a;font-size:12px;padding-bottom:30px}
-footer button{background:none;border:1px solid #56658a;color:#8fa3c8;border-radius:12px;padding:4px 12px;margin-left:8px;cursor:pointer}
-@media(max-width:520px){header{padding:28px 10px 10px}main{gap:12px;padding:0 10px}.card{padding:14px 12px}.ic{font-size:38px}.card h2{font-size:17px}.card p{font-size:12px;min-height:36px}.meta{flex-direction:column;align-items:flex-start;gap:6px}}</style></head><body><canvas id="bg"></canvas>
-<header><h1>NEON ARCADE</h1><div class="sub">霓虹游戏厅 · <b>20</b> 款离线小游戏</div></header>
+body{min-height:100vh;background:linear-gradient(180deg,#0a0d24,#171041 60%,#0e0b2c);color:#eef1ff;font-family:"SF Pro Display","PingFang SC","HarmonyOS Sans SC","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+#bg{position:fixed;inset:0;z-index:0;opacity:.8}
+header{position:relative;z-index:1;text-align:center;padding:calc(44px + env(safe-area-inset-top)) 16px 16px}
+.logo{display:inline-flex;align-items:center;gap:14px}
+.logo svg{width:clamp(44px,8vw,64px);height:auto;filter:drop-shadow(0 8px 20px rgba(139,123,255,.5))}
+h1{font-size:clamp(34px,7.5vw,72px);font-weight:900;letter-spacing:2px;background:linear-gradient(180deg,#ffffff 20%,#c9c2ff 70%,#8b7bff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(139,123,255,.45))}
+.sub{margin-top:10px;color:#9aa3c8;letter-spacing:4px;font-size:14px}
+.sub b{color:#ffcf5c}
+main{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(250px,44vw),1fr));gap:22px;max-width:1240px;margin:22px auto 60px;padding:0 18px}
+.card{position:relative;display:flex;flex-direction:column;text-decoration:none;color:inherit;border-radius:20px;background:linear-gradient(180deg,rgba(40,46,110,.78),rgba(16,18,52,.92));box-shadow:0 14px 34px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(160,180,255,.1);overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.3,1.2),box-shadow .35s;opacity:0;animation:in .6s cubic-bezier(.2,.8,.3,1) forwards}
+.card:hover,.card:focus-visible{transform:translateY(-6px);box-shadow:0 22px 44px rgba(0,0,0,.5),0 0 0 2px var(--c),0 10px 40px -8px var(--c);outline:none}
+@keyframes in{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1}}
+.th{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0a0d24}
+.th img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.8,.3,1)}
+.card:hover .th img{transform:scale(1.07)}
+.th:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,13,36,0) 45%,rgba(16,18,52,.95));pointer-events:none}
+.ic{position:absolute;left:12px;bottom:-2px;z-index:2;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;color:#fff;background:linear-gradient(150deg,var(--c),var(--c2));box-shadow:0 8px 20px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.2);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}
+.ic svg{width:32px;height:32px}
+.card:hover .ic{transform:rotate(-8deg) scale(1.1)}
+.tag{position:absolute;top:10px;right:10px;z-index:2;padding:4px 10px;border-radius:12px;background:rgba(10,13,36,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.18)}
+.bd{padding:14px 16px 14px}
+.card h2{font-size:19px;font-weight:800;letter-spacing:.5px}
+.card p{margin-top:5px;color:#9aa3c8;font-size:12.5px;line-height:1.55;min-height:39px}
+.meta{margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;gap:8px}
+.best{color:#ffcf5c;font-weight:700}
+.play{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(150deg,var(--c),var(--c2));box-shadow:0 4px 12px rgba(0,0,0,.35)}
+#filters{position:relative;z-index:1;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 12px}
+#filters button{font-family:inherit;cursor:pointer;border:0;background:rgba(40,46,110,.6);color:#cfd6ff;border-radius:20px;padding:8px 16px;font-size:14px;font-weight:700;transition:.2s;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(160,180,255,.12)}
+#filters button:hover{background:rgba(60,66,140,.8)}
+#filters button.on{background:linear-gradient(180deg,#8b7bff,#5e6bff);color:#fff;box-shadow:0 6px 18px rgba(139,123,255,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+footer{position:relative;z-index:1;text-align:center;color:#6a7299;font-size:12px;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+footer button{font-family:inherit;background:rgba(40,46,110,.6);border:0;color:#cfd6ff;border-radius:12px;padding:5px 12px;margin-left:8px;cursor:pointer}
+@media(max-width:520px){header{padding:calc(26px + env(safe-area-inset-top)) 10px 10px}.sub{letter-spacing:2px;font-size:12px}main{gap:12px;padding:0 10px}.bd{padding:10px 10px 10px}.ic{width:40px;height:40px;border-radius:12px;left:8px}.ic svg{width:24px;height:24px}.card h2{font-size:15px}.card p{font-size:11px;min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.play{display:none}.tag{font-size:10px;padding:3px 8px;top:6px;right:6px}#filters button{padding:6px 12px;font-size:13px}}
+</style></head><body><canvas id="bg"></canvas>
+<header><div class="logo"><svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff6ad5"/></linearGradient></defs><rect x="4" y="14" width="56" height="36" rx="18" fill="url(#lg)"/><rect x="4" y="14" width="56" height="18" rx="9" fill="rgba(255,255,255,.18)"/><path d="M18 26v12M12 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="28" r="3.6" fill="#ffcf5c"/><circle cx="50" cy="36" r="3.6" fill="#fff"/></svg><h1>NEON ARCADE</h1></div><div class="sub">霓虹游戏厅 · <b>30</b> 款离线小游戏</div></header>
 <nav id="filters"></nav><main id="g"></main>
 <footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button></footer>
 <script>
 const T=v=>(v/60|0)+':'+String(v%60).padStart(2,'0');
+const ICON={
+'2048':'<rect x="6" y="6" width="16" height="16" rx="3"/><rect x="26" y="6" width="16" height="16" rx="3"/><rect x="6" y="26" width="16" height="16" rx="3"/><rect x="26" y="26" width="16" height="16" rx="3" fill="currentColor" fill-opacity=".35"/>',
+snake:'<path d="M8 36h14a6 6 0 0 0 0-12H18a6 6 0 0 1 0-12h20"/><circle cx="38" cy="12" r="3" fill="currentColor"/><circle cx="10" cy="36" r="2"/>',
+tetris:'<path d="M6 30h12v12H6zM18 30h12v12H18zM30 30h12v12H30zM18 18h12v12H18z"/>',
+breakout:'<path d="M6 8h10v6H6zM19 8h10v6H19zM32 8h10v6H32zM12 17h10v6H12zM26 17h10v6H26z"/><circle cx="26" cy="32" r="3" fill="currentColor"/><path d="M14 41h20"/>',
+minesweeper:'<circle cx="24" cy="26" r="11"/><path d="M24 9v6M24 37v6M7 26h6M35 26h6M12 14l4 4M36 14l-4 4M12 38l4-4M36 38l-4-4"/>',
+flappy:'<ellipse cx="22" cy="24" rx="13" ry="10"/><circle cx="27" cy="20" r="2.5" fill="currentColor"/><path d="M35 25l8 2-8 3M14 26c-4 0-6 4-2 6"/>',
+shooter:'<path d="M24 5l8 22-8-4-8 4z"/><path d="M18 31l-4 10M30 31l4 10M24 29v14"/>',
+memory:'<rect x="6" y="8" width="16" height="22" rx="3"/><rect x="26" y="18" width="16" height="22" rx="3"/><path d="M14 15v8M10 19h8"/><circle cx="34" cy="29" r="3"/>',
+gomoku:'<path d="M6 12h36M6 24h36M6 36h36M12 6v36M24 6v36M36 6v36"/><circle cx="24" cy="24" r="5" fill="currentColor"/><circle cx="12" cy="12" r="5"/>',
+runner:'<circle cx="28" cy="8" r="4"/><path d="M26 14l-6 12 8 4-2 12M20 26l-10 4M24 18l10 4 4-6"/><path d="M4 44h40"/>',
+match3:'<path d="M12 6l8 8-8 8-8-8zM36 6l8 8-8 8-8-8zM24 26l8 8-8 8-8-8z"/>',
+bubble:'<circle cx="16" cy="16" r="9"/><circle cx="33" cy="14" r="7"/><circle cx="26" cy="32" r="10"/><path d="M22 28a4 4 0 0 1 4-3"/>',
+sudoku:'<rect x="6" y="6" width="36" height="36" rx="3"/><path d="M18 6v36M30 6v36M6 18h36M6 30h36"/><path d="M10 10l4 4M36 21v6"/>',
+pipes:'<path d="M6 16h14v16h22"/><path d="M28 6v10h8"/><circle cx="6" cy="16" r="3" fill="currentColor"/><circle cx="42" cy="32" r="3" fill="currentColor"/>',
+towerdef:'<path d="M14 42V20h20v22M12 20h24l-3-8H15zM20 12V6h8v6M21 42v-8h6v8"/>',
+reversi:'<circle cx="16" cy="16" r="9"/><circle cx="32" cy="32" r="9"/><circle cx="32" cy="16" r="9" fill="currentColor" fill-opacity=".4"/><circle cx="16" cy="32" r="9" fill="currentColor" fill-opacity=".4"/>',
+pinball:'<path d="M8 44V14a16 16 0 0 1 32 0v30"/><path d="M14 38l8 4M34 38l-8 4"/><circle cx="18" cy="18" r="4"/><circle cx="30" cy="22" r="4"/><circle cx="24" cy="32" r="2.5" fill="currentColor"/>',
+racer:'<rect x="14" y="6" width="20" height="36" rx="6"/><path d="M17 14h14M17 32h14"/><path d="M6 4v40M42 4v40" stroke-dasharray="4 4"/>',
+sokoban:'<rect x="8" y="16" width="22" height="22" rx="2"/><path d="M8 16l22 22M30 16L8 38"/><circle cx="38" cy="27" r="5"/>',
+whack:'<ellipse cx="24" cy="38" rx="16" ry="5"/><path d="M14 38V26a10 10 0 0 1 20 0v12"/><circle cx="20" cy="26" r="1.8" fill="currentColor"/><circle cx="28" cy="26" r="1.8" fill="currentColor"/>',
+xiangqi:'<circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="12"/><path d="M18 20h12M24 16v16M18 30h12"/>',
+pacman:'<path d="M38 14A16 16 0 1 0 38 34L24 24z"/><circle cx="26" cy="15" r="2" fill="currentColor"/><circle cx="44" cy="24" r="2" fill="currentColor"/>',
+asteroids:'<path d="M14 8l12 2 10 8-2 12-10 8-12-4-6-10 2-10z"/><path d="M38 38l6 6M34 44l-8-14 14 6z"/>',
+pong:'<path d="M8 10v14M40 24v14"/><circle cx="24" cy="22" r="3" fill="currentColor"/><path d="M24 4v40" stroke-dasharray="3 5"/>',
+subway:'<path d="M18 6L6 44M30 6l12 38M24 6v38" stroke-dasharray="0"/><rect x="18" y="26" width="12" height="12" rx="2" fill="currentColor" fill-opacity=".4"/>',
+lianliankan:'<rect x="5" y="8" width="14" height="14" rx="3"/><rect x="29" y="26" width="14" height="14" rx="3"/><path d="M12 22v12h17M36 26V14H19"/>',
+klotski:'<rect x="6" y="6" width="36" height="36" rx="3"/><rect x="14" y="10" width="20" height="20" rx="2" fill="currentColor" fill-opacity=".35"/><path d="M18 42h12"/>',
+rhythm:'<path d="M18 36V10l20-4v26"/><circle cx="13" cy="36" r="5"/><circle cx="33" cy="32" r="5"/>',
+stack:'<rect x="14" y="34" width="22" height="7"/><rect x="12" y="25" width="22" height="7"/><rect x="16" y="16" width="20" height="7"/><rect x="10" y="7" width="20" height="7" fill="currentColor" fill-opacity=".35"/>',
+merge:'<circle cx="24" cy="28" r="15"/><path d="M14 22c4 4 16 4 20 0M12 30c6 5 18 5 24 0"/><path d="M24 13c0-4 3-6 6-7"/>'};
 const GAMES=[
-['2048','2048','🔢','滑动合并数字，冲击 2048','#00f0ff','#7b2bff','益智'],
-['snake','贪吃蛇','🐍','经典霓虹贪吃蛇，越吃越快','#00ff88','#00b3ff','经典'],
-['tetris','俄罗斯方块','🧱','七种方块，消行连击','#c000ff','#00f0ff','经典'],
-['breakout','打砖块','🏓','多关卡＋道具＋多球','#ff3366','#ffaa00','动作'],
-['minesweeper','扫雷','💣','三种难度，首击安全','#ff00e6','#00f0ff','益智',[['初','mines_easy',v=>v+'s'],['中','mines_mid',v=>v+'s'],['高','mines_hard',v=>v+'s']]],
-['flappy','霓虹飞鸟','🐤','穿越霓虹管道','#ffe600','#ff2d95','休闲'],
-['shooter','星际射击','🚀','弹幕射击，火力升级','#00f0ff','#ff3366','动作'],
-['memory','记忆翻牌','🃏','考验记忆力的 3D 翻牌','#ff9900','#ff00e6','益智'],
-['gomoku','五子棋','⚫','α-β 搜索 AI，三档难度','#00ff88','#ff00e6','棋类'],
-['runner','霓虹跑酷','🏃','二段跳、滑铲、收金币','#ff2d95','#ffe600','动作'],
-['match3','消消乐','💎','三消连锁，30 步冲 3000 分','#ff3366','#ffe600','休闲'],
-['bubble','泡泡龙','🫧','瞄准反弹，同色三连消除','#00f0ff','#c000ff','休闲'],
-['sudoku','数独','🧩','三档难度，笔记与提示','#7b8cff','#00f0ff','益智',[['易','sudoku_easy',T],['中','sudoku_mid',T],['难','sudoku_hard',T]]],
-['pipes','霓虹接管','🔌','旋转管道点亮全图','#00ff88','#ffe600','益智'],
-['towerdef','霓虹塔防','🗼','三种防御塔，Boss 波次','#ff9900','#00f0ff','策略'],
-['reversi','黑白棋','⚪','翻转对决，三档 AI','#00f0ff','#ff00e6','棋类'],
-['pinball','弹珠台','🎱','挡板、弹柱、倍率','#ff00e6','#ffe600','动作'],
-['racer','极速赛车','🏎️','变道超车，氮气加速','#00f0ff','#ff3366','动作'],
-['sokoban','推箱子','📦','8 个精选关卡，可撤销','#ff9900','#00ff88','益智'],
-['whack','打地鼠','🔨','60 秒手速挑战','#ffe600','#ff3366','休闲']];
-const CATS=['全部',...new Set(GAMES.map(g=>g[6]))];let cat='全部';
+['snake','贪吃蛇','经典霓虹贪吃蛇，越吃越快','#00ff88','#00b3ff','经典'],
+['tetris','俄罗斯方块','七种方块，消行连击','#c000ff','#00f0ff','经典'],
+['pacman','霓虹吃豆','迷宫追逐，反吃幽灵','#ffe600','#3355ff','经典'],
+['asteroids','陨石风暴','惯性飞船击碎陨石','#c88cff','#00f0ff','经典'],
+['pong','霓虹乒乓','AI 三档 + 本地双人','#00f0ff','#ff00e6','经典'],
+['breakout','打砖块','多关卡＋道具＋多球','#ff3366','#ffaa00','经典'],
+['shooter','星际射击','弹幕射击，火力升级','#00f0ff','#ff3366','动作'],
+['runner','霓虹跑酷','二段跳、滑铲、收金币','#ff2d95','#ffe600','动作'],
+['subway','三轨酷跑','换道、跳跃、翻滚','#00f0ff','#ff00e6','动作'],
+['racer','极速赛车','变道超车，氮气加速','#00f0ff','#ff3366','动作'],
+['pinball','弹珠台','挡板、弹柱、倍率','#ff00e6','#ffe600','动作'],
+['xiangqi','中国象棋','完整规则，α-β AI 三档','#ff4d6d','#00f0ff','棋类'],
+['gomoku','五子棋','α-β 搜索 AI，三档难度','#00ff88','#ff00e6','棋类'],
+['reversi','黑白棋','翻转对决，三档 AI','#00f0ff','#ff00e6','棋类'],
+['towerdef','霓虹塔防','三种防御塔，Boss 波次','#ff9900','#00f0ff','策略'],
+['klotski','华容道','6 关，含经典横刀立马','#ff3366','#00ff88','策略'],
+['sokoban','推箱子','8 个精选关卡，可撤销','#ff9900','#00ff88','策略'],
+['pipes','霓虹接管','旋转管道点亮全图','#00ff88','#ffe600','策略'],
+['2048','2048','滑动合并数字，冲击 2048','#00f0ff','#7b2bff','益智'],
+['minesweeper','扫雷','三种难度，首击安全','#ff00e6','#00f0ff','益智',[['初','mines_easy',v=>v+'s'],['中','mines_mid',v=>v+'s'],['高','mines_hard',v=>v+'s']]],
+['sudoku','数独','三档难度，笔记与提示','#7b8cff','#00f0ff','益智',[['易','sudoku_easy',T],['中','sudoku_mid',T],['难','sudoku_hard',T]]],
+['memory','记忆翻牌','考验记忆力的 3D 翻牌','#ff9900','#ff00e6','益智'],
+['lianliankan','连连看','两弯之内连线消除','#00ff88','#ff9900','益智'],
+['merge','合成大西瓜','物理碰撞合成水果','#00e676','#ff3366','休闲'],
+['stack','叠叠高','精准落块，越叠越高','#00f0ff','#ffe600','休闲'],
+['rhythm','节奏大师','四轨下落音符','#ff3366','#00ff88','休闲'],
+['match3','消消乐','三消连锁，30 步冲 3000 分','#ff3366','#ffe600','休闲'],
+['bubble','泡泡龙','瞄准反弹，同色三连消除','#00f0ff','#c000ff','休闲'],
+['flappy','霓虹飞鸟','穿越霓虹管道','#ffe600','#ff2d95','休闲'],
+['whack','打地鼠','60 秒手速挑战','#ffe600','#ff3366','休闲']];
+const CATS=['全部',...new Set(GAMES.map(g=>g[5]))];let cat='全部';
 const g=document.getElementById('g'),fb=document.getElementById('filters');
 function bestOf(d,keys){if(keys)return keys.map(([l,k,f])=>{const b=+localStorage.getItem('hub_best_'+k)||0;return l+' '+(b?f(b):'—')}).join(' · ');const b=+localStorage.getItem('hub_best_'+d)||0;return b?'最佳 '+b:'尚未挑战'}
-function render(){g.innerHTML='';let i=0;GAMES.forEach(([d,n,ic,desc,c,c2,tag,keys])=>{if(cat!=='全部'&&tag!==cat)return;const a=document.createElement('a');a.className='card';a.href=d+'/index.html';a.style.cssText=`--c:${c};--c2:${c2};animation-delay:${(i++)*.04}s`;
- a.innerHTML=`<div class="ic">${ic}</div><h2>${n}</h2><p>${desc}</p><div class="meta"><span class="best">${bestOf(d,keys)}</span><span class="tag">${tag}</span></div>`;g.appendChild(a)});
- fb.innerHTML=CATS.map(k=>`<button class="${k===cat?'on':''}" data-c="${k}">${k} ${k==='全部'?GAMES.length:GAMES.filter(q=>q[6]===k).length}</button>`).join('')}
+function render(){g.innerHTML='';let i=0;GAMES.forEach(([d,n,desc,c,c2,tag,keys])=>{if(cat!=='全部'&&tag!==cat)return;const a=document.createElement('a');a.className='card';a.href=d+'/index.html';a.style.cssText=`--c:${c};--c2:${c2};animation-delay:${(i++)*.04}s`;
+ a.innerHTML=`<div class="th"><img src="${(window.THUMBS&&THUMBS[d])||('thumbs/'+d+'.webp')}" alt="" loading="lazy" decoding="async"><span class="tag">${tag}</span><div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${ICON[d]||""}</svg></div></div><div class="bd"><h2>${n}</h2><p>${desc}</p><div class="meta"><span class="best">${bestOf(d,keys)}</span><span class="play"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M8 5l11 7-11 7z" fill="#fff"/></svg></span></div></div>`;g.appendChild(a)});
+ fb.innerHTML=CATS.map(k=>`<button class="${k===cat?'on':''}" data-c="${k}">${k} ${k==='全部'?GAMES.length:GAMES.filter(q=>q[5]===k).length}</button>`).join('')}
 fb.onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;sessionStorage.setItem('hub_cat',c);render()}};cat=sessionStorage.getItem('hub_cat')||'全部';if(!CATS.includes(cat))cat='全部';render();
 document.getElementById('clr').onclick=()=>{if(confirm('确定清除所有游戏的最高分记录？')){Object.keys(localStorage).filter(k=>k.startsWith('hub_best_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
 if(window.BUNDLE){document.addEventListener('click',e=>{const a=e.target.closest('.card');if(!a)return;e.preventDefault();const d=a.getAttribute('href').split('/')[0];const html=BUNDLE[d];if(!html)return;const f=document.createElement('iframe');f.id='gf';f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:99;background:#070712';f.setAttribute('allow','autoplay');f.srcdoc=html;document.body.appendChild(f);history.pushState({g:d},'');f.onload=()=>f.contentWindow.focus()});
  const close=()=>{const f=document.getElementById('gf');if(f){f.remove();location.reload()}};addEventListener('message',e=>{if(e.data==='hub-back'){history.back()}});addEventListener('popstate',close)}
-const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,pts;
-function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[...Array(Math.min(90,W/14|0))].map(()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4}))}rs();addEventListener('resize',rs);
-(function f(t){requestAnimationFrame(f);x.fillStyle='#05050f';x.fillRect(0,0,W,H);
- x.strokeStyle='rgba(255,0,230,.12)';const hy=H*.62,o=(t/30)%50;for(let i=0;i<12;i++){const y=hy+Math.pow(i+o/50,2)*6;if(y>H)break;x.beginPath();x.moveTo(0,y);x.lineTo(W,y);x.stroke()}
- for(let i=-20;i<=20;i++){x.beginPath();x.moveTo(W/2+i*30,hy);x.lineTo(W/2+i*220,H);x.stroke()}
- pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1});
- for(let i=0;i<pts.length;i++){const a=pts[i];x.fillStyle='rgba(0,240,255,.6)';x.fillRect(a.x,a.y,2,2);for(let j=i+1;j<pts.length;j++){const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<120){x.strokeStyle=`rgba(0,240,255,${.15*(1-d/120)})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}}})(0);
+const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,st;
+function rs(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';x.setTransform(d,0,0,d,0,0);st=[...Array(Math.min(120,W/10|0))].map(()=>({x:Math.random()*W,y:Math.random()*H,s:Math.random()*1.4+.3,p:Math.random()*7}))}rs();addEventListener('resize',rs);
+const BL=[['#8b7bff',.35,.2,.3],['#ff6ad5',.22,.8,.25],['#3fd8ff',.2,.5,.8],['#ffcf5c',.08,.15,.85]];
+(function f(t){requestAnimationFrame(f);if(document.hidden)return;x.clearRect(0,0,W,H);x.globalCompositeOperation='lighter';
+ BL.forEach(([c,a,bx,by],i)=>{const X=W*(bx+.08*Math.sin(t/7000+i*2)),Y=H*(by+.06*Math.cos(t/9000+i)),R=Math.max(W,H)*.45;const g=x.createRadialGradient(X,Y,0,X,Y,R);const h=c.match(/\w\w/g).map(v=>parseInt(v,16)).join(',');g.addColorStop(0,`rgba(${h},${a})`);g.addColorStop(1,`rgba(${h},0)`);x.fillStyle=g;x.fillRect(0,0,W,H)});
+ x.globalCompositeOperation='source-over';st.forEach(s=>{x.fillStyle=`rgba(255,255,255,${.25+.45*Math.sin(t/900+s.p)**2})`;x.fillRect(s.x,s.y,s.s,s.s)})})(0);
 </script></body></html>

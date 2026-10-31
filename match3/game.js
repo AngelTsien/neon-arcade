@@ -14,15 +14,19 @@ async function trySwap(a,b){if(busy||!Hub.active())return;const my=gen;if(Math.a
  if(my!==gen)return;moves--;combo=0;await resolve(my);if(my!==gen)return;busy=false;
  if(moves<=0){Hub.gameOver(score,score>=3000?'胜利！':'步数用完')}else if(!hasMove()){fill();Hub.sfx('flip')}}
 async function resolve(my){let m;while(my===gen&&(m=matches()).size){combo++;const pts=m.size*10*combo;score+=pts;Hub.setScore(score);Hub.sfx(combo>1?'win':'score');
- m.forEach(i=>{const r=i/N|0,c=i%N;for(let k=0;k<10;k++)anim.push({x:c*S+S/2,y:r*S+S/2+50,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,l:30,c:COL[g[r][c].v]});g[r][c]=null});
+ m.forEach(i=>{const r=i/N|0,c=i%N;PS.burst(c*S+S/2,r*S+S/2+50,[GC[g[r][c].v],'#fff'],12,{speed:4,size:3});g[r][c]=null});
  if(combo>1)anim.push({txt:'连击 x'+combo,x:W/2,y:H/2,l:50});await wait(160);if(my!==gen)return;
  for(let c=0;c<N;c++){let w=N-1;for(let r=N-1;r>=0;r--)if(g[r][c]){const t=g[r][c];g[r][c]=null;g[w][c]=t;t.y=Math.min(t.y,r);w--}for(let r=w;r>=0;r--)g[r][c]={v:rnd(),y:r-w-1,s:1}}
  await wait(260)}}
-function draw(){if(!g)return;x.fillStyle='#08081a';x.fillRect(0,0,W,H);x.fillStyle='#9ab';x.font='16px sans-serif';x.fillText('剩余步数 ',10,32);x.fillStyle=moves<=5?'#f36':'#0ff';x.font='bold 24px sans-serif';x.fillText(moves,96,33);x.fillStyle='#9ab';x.font='14px sans-serif';x.textAlign='right';x.fillText('目标 3000 分',W-10,32);x.textAlign='center';
- for(let r=0;r<N;r++)for(let c=0;c<N;c++){x.fillStyle=(r+c)%2?'#ffffff08':'#ffffff04';x.fillRect(c*S,r*S+50,S,S);const t=g[r][c];if(!t)continue;t.y+=(r-t.y)*.3;if(Math.abs(r-t.y)<.01)t.y=r;
-  const X=c*S+S/2,Y=t.y*S+S/2+50,isS=sel&&sel[0]===r&&sel[1]===c,pul=isS?1+Math.sin(performance.now()/100)*.08:1;x.save();x.translate(X,Y);x.scale(pul,pul);x.shadowColor=x.fillStyle=COL[t.v];x.shadowBlur=isS?25:12;x.beginPath();x.arc(0,0,S*.38,0,7);x.fill();x.shadowBlur=0;x.fillStyle='#0008';x.font='bold 24px sans-serif';x.fillText(SYM[t.v],0,9);x.restore()}
- if(Hub.active()&&kb){x.strokeStyle='#fff';x.lineWidth=2;x.strokeRect(cur[1]*S+2,cur[0]*S+52,S-4,S-4)}
- anim=anim.filter(a=>a.l-->0);anim.forEach(a=>{if(a.txt){x.globalAlpha=a.l/50;x.fillStyle='#ff0';x.font='bold 40px sans-serif';x.fillText(a.txt,a.x,a.y-(50-a.l));x.globalAlpha=1;return}a.x+=a.vx;a.y+=a.vy;x.globalAlpha=a.l/30;x.fillStyle=a.c;x.fillRect(a.x,a.y,4,4);x.globalAlpha=1});x.textAlign='left'}
+const GK=[1,2,0,3,4,6],GC=['#ff4d6d','#3fc8ff','#ffcf3c','#3fe0a0','#b06bff','#ff8a2c'];const PS=new Art.Particles();
+function draw(){if(!g)return;const A=Art,tm=performance.now();x.clearRect(0,0,W,H);
+ A.panel(x,4,4,W-8,40,12);A.text(x,'剩余步数',16,24,13,'#9aa3c8',{align:'left',w:600});A.text(x,String(moves),88,24,22,moves<=5?'#ff6b6b':'#5ee7ff',{align:'left'});x.fillStyle='rgba(0,0,0,.35)';A.rr(x,W-180,18,160,10,5);x.fill();const pg=x.createLinearGradient(W-180,0,W-20,0);pg.addColorStop(0,'#8b7bff');pg.addColorStop(1,'#ff6ad5');x.fillStyle=pg;A.rr(x,W-180,18,Math.max(10,160*Math.min(1,score/3000)),10,5);x.fill();A.text(x,'目标 3000',W-100,38,10,'#9aa3c8',{w:600});
+ const bg=x.createLinearGradient(0,50,0,H);bg.addColorStop(0,'#262c6e');bg.addColorStop(1,'#141640');x.fillStyle=bg;A.rr(x,0,50,W,N*S,14);x.fill();
+ for(let r=0;r<N;r++)for(let c=0;c<N;c++){x.fillStyle=(r+c)%2?'rgba(8,10,34,.55)':'rgba(8,10,34,.35)';A.rr(x,c*S+2,r*S+52,S-4,S-4,9);x.fill()}
+ for(let r=0;r<N;r++)for(let c=0;c<N;c++){const t=g[r][c];if(!t)continue;t.y+=(r-t.y)*.3;if(Math.abs(r-t.y)<.01)t.y=r;
+  const X=c*S+S/2,Y=t.y*S+S/2+50,isS=sel&&sel[0]===r&&sel[1]===c,pul=isS?1+Math.sin(tm/100)*.08:1;if(isS){x.fillStyle='rgba(255,255,255,.18)';A.rr(x,c*S+2,r*S+52,S-4,S-4,9);x.fill()}A.gem(x,X,Y,S*.36,GK[t.v],GC[t.v],{scale:pul,glow:isS?18:0})}
+ if(Hub.active()&&kb){x.strokeStyle='#ffcf5c';x.lineWidth=3;A.rr(x,cur[1]*S+2,cur[0]*S+52,S-4,S-4,9);x.stroke()}
+ PS.draw(x);anim=anim.filter(a=>a.txt&&a.l-->0);anim.forEach(a=>{x.globalAlpha=Math.min(1,a.l/25);A.text(x,a.txt,a.x,a.y-(50-a.l),40,'#ffcf5c',{grad:['#fff3c4','#ffb21c'],glow:'rgba(255,207,92,.6)'});x.globalAlpha=1});x.textAlign='left'}
 let kb=false;(function loop(){requestAnimationFrame(loop);draw()})();
 Hub.init({id:'match3',title:'消消乐',help:'交换相邻宝石，三个或以上同色连成一线即可消除，连锁消除有连击加成。30 步内冲击 3000 分！点击两个相邻宝石或直接拖动/滑动交换；键盘方向键移动光标，空格选中。',onStart(){gen++;score=0;moves=30;busy=false;sel=null;anim=[];fill()}});
 fill();moves=30;

@@ -16,12 +16,12 @@ function el(h){const d=document.createElement('div');d.innerHTML=h.trim();return
 H.init=function(o){
  H.id=o.id;H.o=o;H.lowerBetter=!!o.lowerBetter;
  document.title=o.title+' · 霓虹游戏厅';
- const hud=el(`<div class="hud"><button class="btn" id="hb-back" title="返回大厅">⟵ 大厅</button><span class="title">${o.title}</span><span class="sp"></span><span class="stat">${o.scoreLabel||'得分'} <b id="hb-s">0</b></span><span class="stat">最佳 <b id="hb-b">0</b></span><button class="btn" id="hb-m"></button><button class="btn" id="hb-p" title="暂停 (P)">⏸</button></div>`);
+ const hud=el(`<div class="hud"><button class="btn" id="hb-back" title="返回大厅">‹ 大厅</button><span class="title">${o.title}</span><span class="sp"></span><span class="stat">${o.scoreLabel||'得分'} <b id="hb-s">0</b></span><span class="stat">最佳 <b id="hb-b">0</b></span><button class="btn" id="hb-m"></button><button class="btn" id="hb-p" title="暂停 (P)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M8 5v14M16 5v14"/></svg></button></div>`);
  document.body.prepend(hud);
  H.$s=hud.querySelector('#hb-s');H.$b=hud.querySelector('#hb-b');
  const fmt=v=>o.fmt?o.fmt(v):v;H.fmt=fmt;
  const showBest=()=>{const b=H.best();H.$b.textContent=b?fmt(b):'—'};showBest();
- const m=hud.querySelector('#hb-m');const mm=()=>m.textContent=H.muted?'🔇':'🔊';mm();
+ const m=hud.querySelector('#hb-m');const mm=()=>m.innerHTML=H.muted?'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';mm();
  m.onclick=()=>{H.muted=!H.muted;localStorage.setItem('hub_muted',H.muted?'1':'0');mm();m.blur()};
  H.back=()=>{if(window.parent!==window&&window.__inBundle){parent.postMessage('hub-back','*')}else location.href='../index.html'};hud.querySelector('#hb-back').onclick=()=>H.back();
  hud.querySelector('#hb-p').onclick=e=>{e.currentTarget.blur();H.togglePause()};
@@ -39,13 +39,14 @@ H.init=function(o){
   const k=e.key;
   if((k===' '||k==='Enter')&&(st.classList.contains('show')||ov.classList.contains('show'))){e.preventDefault();e.stopImmediatePropagation();H.start();return}
   if(k==='p'||k==='P'||k==='Escape'){e.stopImmediatePropagation();if(H.running)H.togglePause();return}
-  if((k==='r'||k==='R')&&!st.classList.contains('show')){e.stopImmediatePropagation();H.start();return}
+  if((k==='r'||k==='R')&&!st.classList.contains('show')){e.stopImmediatePropagation();if(H.o.onR&&H.running&&!H.paused){H.o.onR();return}H.start();return}
   if(H.paused){e.preventDefault();e.stopImmediatePropagation();if(k===' ')H.togglePause(false)}
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&H.running&&!H.paused)H.togglePause(true)});
  H.showBest=showBest;
 };
-H.start=function(){ctx();H.sfx('click');[H.$st,H.$pa,H.$ov].forEach(x=>x.classList.remove('show'));H.paused=false;H.running=true;H.setScore(0);H.o.onStart&&H.o.onStart()};
+H.gen=0;H.later=function(ms,fn){const g=H.gen;const tick=()=>{if(!H.running||H.gen!==g)return;if(H.paused){setTimeout(tick,120);return}fn()};setTimeout(tick,ms)};
+H.start=function(){H.gen++;ctx();H.sfx('click');[H.$st,H.$pa,H.$ov].forEach(x=>x.classList.remove('show'));H.paused=false;H.running=true;H.setScore(0);H.o.onStart&&H.o.onStart()};
 H.togglePause=function(v){if(!H.running)return;H.paused=v===undefined?!H.paused:v;H.$pa.classList.toggle('show',H.paused);if(!H.paused)H.o.onResume&&H.o.onResume()};
 H.gameOver=function(score,title){if(!H.running)return;H.running=false;H.paused=false;const b=H.best();let nb=false;
  if(score>0&&(b===0||(H.lowerBetter?score<b:score>b))){localStorage.setItem('hub_best_'+H.id,score);nb=true}
@@ -59,5 +60,6 @@ H.swipe=function(target,cb){let sx,sy,t;target.addEventListener('touchstart',e=>
 // 按住按钮
 H.hold=function(btn,on,off){btn.addEventListener('touchstart',e=>{e.preventDefault();on()},{passive:false});btn.addEventListener('touchend',e=>{e.preventDefault();off&&off()},{passive:false});btn.addEventListener('mousedown',on);btn.addEventListener('mouseup',()=>off&&off());btn.addEventListener('mouseleave',()=>off&&off())};
 // 高DPI画布适配
-H.fit=function(cv,w,h){const st=document.getElementById('stage');const r=st.getBoundingClientRect();const pad=o=>o;let s=Math.min((r.width-16)/w,(r.height-16)/h);if(!(s>0))s=1;cv.style.width=w*s+'px';cv.style.height=h*s+'px';const d=Math.min(devicePixelRatio||1,2);cv.width=w*d;cv.height=h*d;const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return s};
+H.flex=function(bw,bh,o){o=o||{};const r=document.getElementById('stage').getBoundingClientRect();if(!(r.height>r.width*1.15)||r.width>700)return{W:bw,H:bh};const W=o.pw||bw;return{W,H:Math.round(Math.min(W*(o.max||2.4),Math.max(bh*(o.min||.75),W*(r.height-6)/(r.width-6))))}};
+H.fit=function(cv,w,h){const st=document.getElementById('stage');const r=st.getBoundingClientRect();const pad=o=>o;const pd=r.width<700?4:16;let s=Math.min((r.width-pd)/w,(r.height-pd)/h);if(!(s>0))s=1;cv.style.width=w*s+'px';cv.style.height=h*s+'px';const d=Math.min(devicePixelRatio||1,3);cv.width=w*d;cv.height=h*d;const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return s};
 })();
