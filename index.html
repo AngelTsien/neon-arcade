@@ -33,9 +33,10 @@ main{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-
 #filters button.on{background:linear-gradient(180deg,#8b7bff,#5e6bff);color:#fff;box-shadow:0 6px 18px rgba(139,123,255,.45),inset 0 1px 0 rgba(255,255,255,.4)}
 footer{position:relative;z-index:1;text-align:center;color:#6a7299;font-size:12px;padding-bottom:calc(30px + env(safe-area-inset-bottom))}
 footer button{font-family:inherit;background:rgba(40,46,110,.6);border:0;color:#cfd6ff;border-radius:12px;padding:5px 12px;margin-left:8px;cursor:pointer}
-@media(max-width:520px){header{padding:calc(26px + env(safe-area-inset-top)) 10px 10px}.sub{letter-spacing:2px;font-size:12px}main{gap:12px;padding:0 10px}.bd{padding:10px 10px 10px}.ic{width:40px;height:40px;border-radius:12px;left:8px}.ic svg{width:24px;height:24px}.card h2{font-size:15px}.card p{font-size:11px;min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.play{display:none}.tag{font-size:10px;padding:3px 8px;top:6px;right:6px}#filters button{padding:6px 12px;font-size:13px}}
-</style></head><body><canvas id="bg"></canvas>
-<header><div class="logo"><svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff6ad5"/></linearGradient></defs><rect x="4" y="14" width="56" height="36" rx="18" fill="url(#lg)"/><rect x="4" y="14" width="56" height="18" rx="9" fill="rgba(255,255,255,.18)"/><path d="M18 26v12M12 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="28" r="3.6" fill="#ffcf5c"/><circle cx="50" cy="36" r="3.6" fill="#fff"/></svg><h1>NEON ARCADE</h1></div><div class="sub">霓虹游戏厅 · <b>30</b> 款离线小游戏</div></header>
+@media(max-width:520px){header{padding:calc(62px + env(safe-area-inset-top)) 10px 10px}.sub{letter-spacing:2px;font-size:12px}main{gap:12px;padding:0 10px}.bd{padding:10px 10px 10px}.ic{width:40px;height:40px;border-radius:12px;left:8px}.ic svg{width:24px;height:24px}.card h2{font-size:15px}.card p{font-size:11px;min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.play{display:none}.tag{font-size:10px;padding:3px 8px;top:6px;right:6px}#filters button{padding:6px 12px;font-size:13px}}
+.gear{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:5;display:flex;gap:6px}.gear button{cursor:pointer;border:0;display:flex;align-items:center;gap:6px;color:#eaf2ff;background:rgba(40,46,110,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;padding:8px 12px;font:700 13px inherit;font-family:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 18px rgba(0,0,0,.3)}.gear button:hover{background:rgba(80,90,180,.8)}
+</style><script src="common/i18n.js"></script><script src="common/hub.js"></script></head><body><canvas id="bg"></canvas>
+<div class="gear"><button id="lng" title="Language">🌐 <span id="lngt">中文</span></button><button id="set" title="设置"></button></div><header><div class="logo"><svg viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ee7ff"/><stop offset=".5" stop-color="#8b7bff"/><stop offset="1" stop-color="#ff6ad5"/></linearGradient></defs><rect x="4" y="14" width="56" height="36" rx="18" fill="url(#lg)"/><rect x="4" y="14" width="56" height="18" rx="9" fill="rgba(255,255,255,.18)"/><path d="M18 26v12M12 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="28" r="3.6" fill="#ffcf5c"/><circle cx="50" cy="36" r="3.6" fill="#fff"/></svg><h1>NEON ARCADE</h1></div><div class="sub">霓虹游戏厅 · <b id="gcount">50</b> 款离线小游戏</div></header>
 <nav id="filters"></nav><main id="g"></main>
 <footer>完全离线可玩 · 无需网络 · 最高分保存在本机浏览器 <button id="clr">清除全部纪录</button></footer>
 <script>
@@ -49,6 +50,24 @@ mahjong:'<rect x="9" y="8" width="20" height="28" rx="3"/><rect x="19" y="14" wi
 onestroke:'<circle cx="10" cy="10" r="3"/><path d="M10 13v12h14V12h14v24H10"/><circle cx="10" cy="36" r="3"/>',
 lightsout:'<rect x="7" y="7" width="14" height="14" rx="3"/><rect x="27" y="7" width="14" height="14" rx="3"/><rect x="7" y="27" width="14" height="14" rx="3"/><circle cx="34" cy="34" r="7"/><path d="M34 22v2M46 34h-2"/>',
 knife:'<circle cx="24" cy="18" r="11"/><path d="M24 30v12M21 30h6"/><path d="M18 12l3 3M30 12l-3 3"/>',
+freecell:'<rect x="8" y="10" width="16" height="22" rx="3"/><rect x="24" y="16" width="16" height="22" rx="3"/><path d="M32 23l3 4-3 4-3-4z"/>',
+spider:'<circle cx="24" cy="24" r="6"/><path d="M18 20l-8-6M18 24H8M18 28l-8 6M30 20l8-6M30 24h10M30 28l8 6"/><circle cx="24" cy="15" r="3"/>',
+ludo:'<rect x="8" y="8" width="32" height="32" rx="6"/><path d="M8 24h32M24 8v32"/><circle cx="16" cy="16" r="3" fill="currentColor"/><circle cx="32" cy="32" r="3"/>',
+fishy:'<path d="M8 24c6-9 18-9 24 0-6 9-18 9-24 0z"/><path d="M32 24l8-6v12z"/><circle cx="15" cy="22" r="1.6" fill="currentColor"/>',
+boat:'<path d="M6 30h32l-5 8H12z"/><path d="M14 30l6-12h10l4 12"/><path d="M4 42c4-2 8-2 12 0s8 2 12 0 8-2 12 0"/>',
+golf:'<path d="M18 40V8l14 6-14 6"/><ellipse cx="24" cy="40" rx="14" ry="3"/><circle cx="34" cy="34" r="2.6" fill="currentColor"/>',
+tangram:'<path d="M8 8h32L24 24zM8 8v32l16-16zM40 8v16l-8-8z"/><path d="M8 40h16l8-8-8-8"/>',
+goldminer:'<path d="M24 6v18"/><path d="M18 24c0 5 12 5 12 0"/><path d="M14 36l6-6h10l6 6-6 6H20z" fill="currentColor" fill-opacity=".35"/>',
+piano:'<rect x="6" y="10" width="36" height="28" rx="3"/><path d="M15 10v28M24 10v28M33 10v28"/><rect x="12" y="10" width="6" height="16" fill="currentColor"/><rect x="30" y="10" width="6" height="16" fill="currentColor"/>',
+hex2048:'<path d="M24 5l16 9v20l-16 9-16-9V14z"/><path d="M18 20h8l-8 10h10"/>',
+undercover:'<circle cx="24" cy="18" r="8"/><path d="M10 40c2-9 26-9 28 0"/><path d="M14 17h20" stroke-width="5"/>',
+reflex:'<path d="M26 4L12 28h10l-4 16 16-24H24z"/>',
+numbomb:'<circle cx="22" cy="28" r="13"/><path d="M31 18l5-5M36 13l3-1M36 13l1-3"/><path d="M17 28h10M22 23v10" stroke-width="2"/>',
+truth:'<circle cx="24" cy="24" r="17"/><path d="M24 7v34M7 24h34M12 12l24 24M36 12L12 36"/><circle cx="24" cy="24" r="4" fill="currentColor"/>',
+hockey:'<rect x="8" y="4" width="32" height="40" rx="8"/><path d="M8 24h32"/><circle cx="24" cy="14" r="4"/><circle cx="24" cy="34" r="6"/><circle cx="30" cy="22" r="2.4" fill="currentColor"/>',
+charades:'<circle cx="24" cy="10" r="5"/><path d="M24 15v14M24 29l-7 12M24 29l7 12M24 19l-10-6M24 19l10 4"/>',
+draw:'<path d="M8 40l4-12L32 8l8 8-20 20z"/><path d="M28 12l8 8"/><path d="M8 40l8-4"/>',
+werewolf:'<path d="M10 38l4-22 6 8 4-14 4 14 6-8 4 22"/><circle cx="19" cy="28" r="2" fill="currentColor"/><circle cx="29" cy="28" r="2" fill="currentColor"/>',
 jump:'<path d="M6 34l10-5 10 5-10 5zM6 34v4l10 5v-4M26 34v4l-10 5"/><circle cx="34" cy="10" r="4"/><path d="M34 14l-2 10M30 28c2-8 8-8 10-14"/>',
 
 '2048':'<rect x="6" y="6" width="16" height="16" rx="3"/><rect x="26" y="6" width="16" height="16" rx="3"/><rect x="6" y="26" width="16" height="16" rx="3"/><rect x="26" y="26" width="16" height="16" rx="3" fill="currentColor" fill-opacity=".35"/>',
@@ -121,7 +140,26 @@ const GAMES=[
 ['flappy','霓虹飞鸟','穿越霓虹管道','#ffe600','#ff2d95','休闲'],
 ['whack','打地鼠','60 秒手速挑战','#ffe600','#ff3366','休闲'],
 ['knife','见缝插针','飞刀插满旋转木桩','#ff9900','#ffe600','休闲'],
-['jump','跳一跳','蓄力跳跃，连续完美','#8b7bff','#ff6b8b','休闲']];
+['jump','跳一跳','蓄力跳跃，连续完美','#8b7bff','#ff6b8b','休闲'],
+['freecell', '空当接龙', '经典纸牌，四个空当', '#4dd7ff', '#8b7bff', '益智'],
+['spider', '蜘蛛纸牌', '单色 / 双色 / 四色', '#8b7bff', '#ff6ad5', '益智'],
+['tangram', '七巧板', '七块拼板拼剪影', '#ffcf5c', '#ff8a3d', '益智'],
+['hex2048', '六边形 2048', '六个方向合并数字', '#5ee7ff', '#4dffc3', '益智'],
+['ludo', '飞行棋', '1-4 人，本地多人 + AI', '#ff6b8b', '#ffcf5c', '棋类'],
+['fishy', '大鱼吃小鱼', '吃小鱼长大，躲开大鱼', '#4dd7ff', '#ffb21c', '动作'],
+['boat', '快艇漂移', '漂移攒氮气，三圈竞速', '#3fc8ff', '#4dffc3', '动作'],
+['golf', '弹力高尔夫', '九洞迷你高尔夫', '#4dffc3', '#ffcf5c', '休闲'],
+['goldminer', '黄金矿工', '放钩抓金块与钻石', '#ffcf5c', '#ff8a3d', '休闲'],
+['piano', '别踩白块', '只点黑块，弹出旋律', '#eaf2ff', '#8b7bff', '休闲'],
+['undercover','谁是卧底','传手机发词，投票找卧底','#ff6ad5','#8b7bff','多人'],
+['werewolf','狼人杀法官助手','自动配板，夜晚台词','#8b7bff','#ff4d6d','多人'],
+['draw','你画我猜','轮流作画大家猜','#ffcf5c','#ff6b8b','多人'],
+['charades','你演我猜','分队计时表演','#4dffc3','#5ee7ff','多人'],
+['truth','真心话大冒险','转盘选人，三语题库','#ff6b8b','#ffcf5c','多人'],
+['numbomb','数字炸弹','轮流猜数，猜中就爆炸','#ff8a3d','#ff4d6d','多人'],
+['reflex','快速反应对决','2–4 人角落抢拍','#5ee7ff','#4dffc3','多人'],
+['hockey','双人冰球','同屏双人或对战 AI','#3fa8ff','#ff6b8b','多人']];
+document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById('gcount');if(e)e.textContent=GAMES.length});
 const CATS=['全部',...new Set(GAMES.map(g=>g[5]))];let cat='全部';
 const g=document.getElementById('g'),fb=document.getElementById('filters');
 function bestOf(d,keys){if(keys)return keys.map(([l,k,f])=>{const b=+localStorage.getItem('hub_best_'+k)||0;return l+' '+(b?f(b):'—')}).join(' · ');const b=+localStorage.getItem('hub_best_'+d)||0;return b?'最佳 '+b:'尚未挑战'}
@@ -129,7 +167,10 @@ function render(){g.innerHTML='';let i=0;GAMES.forEach(([d,n,desc,c,c2,tag,keys]
  a.innerHTML=`<div class="th"><img src="${(window.THUMBS&&THUMBS[d])||('thumbs/'+d+'.webp')}" alt="" loading="lazy" decoding="async"><span class="tag">${tag}</span><div class="ic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${ICON[d]||""}</svg></div></div><div class="bd"><h2>${n}</h2><p>${desc}</p><div class="meta"><span class="best">${bestOf(d,keys)}</span><span class="play"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M8 5l11 7-11 7z" fill="#fff"/></svg></span></div></div>`;g.appendChild(a)});
  fb.innerHTML=CATS.map(k=>`<button class="${k===cat?'on':''}" data-c="${k}">${k} ${k==='全部'?GAMES.length:GAMES.filter(q=>q[5]===k).length}</button>`).join('')}
 fb.onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;sessionStorage.setItem('hub_cat',c);render()}};cat=sessionStorage.getItem('hub_cat')||'全部';if(!CATS.includes(cat))cat='全部';render();
-document.getElementById('clr').onclick=()=>{if(confirm('确定清除所有游戏的最高分记录？')){Object.keys(localStorage).filter(k=>k.startsWith('hub_best_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
+document.getElementById('set').innerHTML=Hub.gearSVG;const LN={zh:'中文',it:'Italiano',en:'English'};const upL=()=>{document.getElementById('lngt').textContent=LN[I18N.lang]};upL();
+document.getElementById('lng').onclick=()=>{const o=['zh','it','en'];I18N.set(o[(o.indexOf(I18N.lang)+1)%3]);upL()};
+document.getElementById('set').onclick=()=>Hub.openSettings({games:GAMES.map(g=>[g[0],g[1]]),onLang:upL,onReset:render});
+document.getElementById('clr').onclick=()=>{if(confirm(I18N.t('确定清除所有游戏的最高分记录？'))){Object.keys(localStorage).filter(k=>k.startsWith('hub_best_')).forEach(k=>localStorage.removeItem(k));location.reload()}};
 if(window.BUNDLE){document.addEventListener('click',e=>{const a=e.target.closest('.card');if(!a)return;e.preventDefault();const d=a.getAttribute('href').split('/')[0];const html=BUNDLE[d];if(!html)return;const f=document.createElement('iframe');f.id='gf';f.style.cssText='position:fixed;inset:0;width:100%;height:100%;border:0;z-index:99;background:#070712';f.setAttribute('allow','autoplay');f.srcdoc=html;document.body.appendChild(f);history.pushState({g:d},'');f.onload=()=>f.contentWindow.focus()});
  const close=()=>{const f=document.getElementById('gf');if(f){f.remove();location.reload()}};addEventListener('message',e=>{if(e.data==='hub-back'){history.back()}});addEventListener('popstate',close)}
 const cv=document.getElementById('bg'),x=cv.getContext('2d');let W,H,st;

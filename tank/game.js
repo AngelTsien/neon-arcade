@@ -1,5 +1,5 @@
-const cv=document.getElementById('c'),x=cv.getContext('2d'),N=26,S=16,MW=N*S,W=MW+32,OX=16,OY=70,H0=OY+MW+20;let H=H0,CTL=false;
-function fit(){H=Hub.flex(W,H0).H;CTL=H-(OY+MW)>170;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+const cv=document.getElementById('c'),x=cv.getContext('2d'),N=26,S=16,MW=N*S,W=MW+32,OX=16,OY=70,H0=OY+MW+20;let H=H0,CTL=false,Z=1,camX=0,camY=0;
+function fit(){H=Hub.flex(W,H0).H;CTL=H>H0*1.3;Z=CTL?Math.min(1.85,(H-OY-12)/MW):1;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const PS=new Art.Particles(),FL=new Art.Floaters(),DIRS=[[0,-1],[1,0],[0,1],[-1,0]];
 let map,tanks,bullets,pl,lives,score,level,left,spawnT,keys={},touchDir=-1,fireHeld=false,base,pups,freeze,last,lvlT,shield;
 function gen(){const m=[];for(let r=0;r<N;r++)m.push(new Array(N).fill(0));const set=(c,r,w,h,v)=>{for(let i=r;i<r+h;i++)for(let j=c;j<c+w;j++)if(i>=0&&j>=0&&i<N&&j<N){m[i][j]=v;m[i][N-1-j]=v}};
@@ -46,11 +46,12 @@ function cell(r,c,v,tm){const X=OX+c*S,Y=OY+r*S,A=Art;if(v===1){x.fillStyle='#b5
  else if(v===2){const g=x.createLinearGradient(X,Y,X+S,Y+S);g.addColorStop(0,'#e4e9f6');g.addColorStop(1,'#7c86a8');x.fillStyle=g;x.fillRect(X,Y,S,S);x.fillStyle='#b9c1da';x.fillRect(X+4,Y+4,S-8,S-8);x.fillStyle='#fff';x.fillRect(X+1,Y+1,S-3,1)}
  else if(v===3){x.fillStyle='#1d4fd6';x.fillRect(X,Y,S,S);x.strokeStyle='rgba(160,210,255,.6)';x.lineWidth=1.2;x.beginPath();const p=(tm/400+c+r)%4;x.moveTo(X+2,Y+5+p);x.quadraticCurveTo(X+8,Y+2+p,X+14,Y+5+p);x.stroke()}}
 function grass(r,c){const X=OX+c*S,Y=OY+r*S;x.fillStyle='rgba(46,170,80,.92)';x.fillRect(X,Y,S,S);x.fillStyle='#74e08a';for(let i=0;i<4;i++){x.beginPath();x.arc(X+3+(i%2)*9,Y+4+(i>>1)*8,3.4,0,7);x.fill()}}
-function ctlGeo(){const top=OY+MW+20,h=H-top-14,cx=W*.27,cy=top+h/2,R=Math.min(80,h/2-4);return{cx,cy,R,fx:W*.78,fy:cy,fr:Math.min(56,R*.75)}}
+function ctlGeo(){const top=H-190,h=176,cx=W*.27,cy=top+h/2,R=Math.min(80,h/2-4);return{cx,cy,R,fx:W*.78,fy:cy,fr:Math.min(56,R*.75)}}
 function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'tank',blobs:[['#ff8a3d',.14],['#4dd7ff',.12]]});if(!map)return;
  A.panel(x,10,10,W-20,50,14);A.text(x,'第 '+level+' 关',28,35,15,'#fff',{align:'left'});
  for(let i=0;i<Math.min(lives,6);i++){A.heart(x,110+i*20,35,8,'#ff4d6d')}
  A.text(x,'敌军 '+(left+tanks.filter(t=>!t.pl).length),W-28,35,14,'#ffcf5c',{align:'right',w:800});if(freeze>0)A.icon(x,'clock',W-110,35,16,'#4dd7ff');
+ x.save();if(Z>1){x.beginPath();x.rect(0,OY-6,W,H-OY);x.clip();const vw=(W-2*OX)/Z,vh=(H-OY-12)/Z,tx=Math.max(0,Math.min(MW-vw,pl.x+16-vw/2)),ty=Math.max(0,Math.min(MW-vh+190/Z,pl.y+16-vh*.42));camX+=(tx-camX)*.15;camY+=(ty-camY)*.15;if(Math.abs(tx-camX)>200)camX=tx;x.translate(OX,OY);x.scale(Z,Z);x.translate(-camX-OX,-camY-OY)}
  x.fillStyle='#0b0d1a';A.rr(x,OX-4,OY-4,MW+8,MW+8,8);x.fill();x.fillStyle='#14182c';x.fillRect(OX,OY,MW,MW);
  x.strokeStyle='rgba(255,255,255,.03)';for(let i=0;i<=N;i+=2){x.beginPath();x.moveTo(OX+i*S,OY);x.lineTo(OX+i*S,OY+MW);x.moveTo(OX,OY+i*S);x.lineTo(OX+MW,OY+i*S);x.stroke()}
  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const v=map[r][c];if(v&&v<4)cell(r,c,v,tm)}
@@ -59,11 +60,12 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'ta
  for(const t of tanks)if(!t.dead)drawTank(t);
  for(const b of bullets){x.fillStyle=b.o.pl?'#fff6c0':'#ffb0b0';x.shadowColor=x.fillStyle;x.shadowBlur=8;x.beginPath();x.arc(OX+b.x,OY+b.y,3,0,7);x.fill();x.shadowBlur=0}
  for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(map[r][c]===4)grass(r,c);
+ PS.draw(x);FL.draw(x);x.restore();
  if(lvlT>0&&lvlT<5){A.panel(x,W/2-110,OY+MW/2-36,220,72,18);A.text(x,'第 '+level+' 关',W/2,OY+MW/2,26,'#ffcf5c',{grad:['#fff6c0','#ffb21c']})}
- if(CTL){const g=ctlGeo();A.panel(x,12,OY+MW+12,W-24,H-OY-MW-20,20);x.fillStyle='rgba(255,255,255,.06)';x.beginPath();x.arc(g.cx,g.cy,g.R,0,7);x.fill();
+ if(CTL){const g=ctlGeo();x.globalAlpha=.6;x.fillStyle='rgba(255,255,255,.06)';x.beginPath();x.arc(g.cx,g.cy,g.R,0,7);x.fill();
   for(let d=0;d<4;d++){const[dx,dy]=DIRS[d],X=g.cx+dx*g.R*.58,Y=g.cy+dy*g.R*.58;x.fillStyle=touchDir===d?'#8b7bff':'rgba(255,255,255,.12)';x.beginPath();x.arc(X,Y,g.R*.34,0,7);x.fill();x.save();x.translate(X,Y);x.rotate(d*Math.PI/2);x.fillStyle='#fff';x.beginPath();x.moveTo(0,-9);x.lineTo(8,5);x.lineTo(-8,5);x.fill();x.restore()}
   A.orb(x,g.fx,g.fy,g.fr*(fireHeld?.92:1),'#ff4d6d',{glow:fireHeld?20:8});A.text(x,'开火',g.fx,g.fy,16,'#fff',{w:900})}
- PS.draw(x);FL.draw(x)}
+x.globalAlpha=1}
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;if(Hub.active()&&map)update(dt);draw()}
 Hub.init({id:'tank',title:'坦克大战',help:'保护基地（金鹰）并歼灭所有敌军坦克！方向键/WASD 移动，空格开火；手机用下方方向盘与开火键。红色闪烁的敌人被击毁后会掉落道具：星星升级火力、爱心加命、闪电全屏爆破、时钟冻结敌军、铁锹加固基地。草丛可以隐藏坦克，钢墙需满级火力才能击穿。',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
@@ -71,6 +73,6 @@ addEventListener('keydown',e=>{keys[e.key.length===1?e.key.toLowerCase():e.key]=
 cv.style.touchAction='none';const ptr={};
 function pt(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]}
 function evalPtr(){touchDir=-1;fireHeld=false;const g=ctlGeo();for(const k in ptr){const[X,Y]=ptr[k];if(CTL&&Math.hypot(X-g.fx,Y-g.fy)<g.fr*1.4){fireHeld=true;continue}
- if(CTL&&Y>OY+MW){const dx=X-g.cx,dy=Y-g.cy;if(Math.hypot(dx,dy)>8)touchDir=Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0)}else if(!CTL){fireHeld=true;const dx=X-(pl.x+OX+16),dy=Y-(pl.y+OY+16);if(Math.hypot(dx,dy)>30)touchDir=Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0)}}}
+ if(CTL&&Y>H-200){const dx=X-g.cx,dy=Y-g.cy;if(Math.hypot(dx,dy)>8)touchDir=Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0)}else if(!CTL){fireHeld=true;const dx=X-(pl.x+OX+16),dy=Y-(pl.y+OY+16);if(Math.hypot(dx,dy)>30)touchDir=Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0)}}}
 cv.addEventListener('pointerdown',e=>{ptr[e.pointerId]=pt(e);evalPtr()});cv.addEventListener('pointermove',e=>{if(ptr[e.pointerId]){ptr[e.pointerId]=pt(e);evalPtr()}});
 ['pointerup','pointercancel','pointerleave'].forEach(n=>cv.addEventListener(n,e=>{delete ptr[e.pointerId];evalPtr()}));

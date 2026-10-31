@@ -26,7 +26,7 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:50,key:'r'
  if(combo>2){A.text(x,String(combo),W/2,HY-250,54,'#fff',{grad:['#ffffff','#d9e0ff']});A.text(x,'COMBO',W/2,HY-216,13,'#cfd6ff',{w:700})}
  x.fillStyle='rgba(0,0,0,.4)';A.rr(x,14,14,W-28,10,5);x.fill();const hc=hp<30?'#ff4d6d':'#4dffc3';x.fillStyle=hc;A.rr(x,14,14,Math.max(10,(W-28)*hp/100),10,5);x.fill();A.text(x,'BPM '+Math.round(bpm)+' · 最大连击 '+maxC,14,40,12,'#cfd6ff',{align:'left',w:600})}
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;if(Hub.active())update(dt);draw()}
-Hub.init({id:'rhythm',title:'节奏大师',help:'音符落到白线时按下对应轨道：键盘 D F J K，或直接点击轨道（支持多指）。PERFECT 100 分、GOOD 50 分，连击越高倍率越大（最高 ×5）。漏按会掉血，血量归零结束。节奏会越来越快！',onStart(){reset()},onResume(){last=performance.now()}});
+Hub.init({id:'rhythm',noBgm:true,title:'节奏大师',help:'音符落到白线时按下对应轨道：键盘 D F J K，或直接点击轨道（支持多指）。PERFECT 100 分、GOOD 50 分，连击越高倍率越大（最高 ×5）。漏按会掉血，血量归零结束。节奏会越来越快！',onStart(){reset()},onResume(){last=performance.now()}});
 reset();requestAnimationFrame(loop);
 addEventListener('keydown',e=>{const l=KEYS.indexOf(e.key.toLowerCase());if(l>=0&&!e.repeat&&Hub.active()){e.preventDefault();hit(l)}});
 cv.style.touchAction='none';cv.addEventListener('pointerdown',e=>{const r=cv.getBoundingClientRect(),X=(e.clientX-r.left)/r.width*W;const l=Math.floor((X-LX)/LW);if(l>=0&&l<LN)hit(l)});

@@ -1,7 +1,7 @@
 const cv=document.getElementById('c'),x=cv.getContext('2d'),G=52,M=36,W=M*2+G*8,H=M*2+G*9+50;
 const NM={rK:'帅',rA:'仕',rB:'相',rN:'马',rR:'车',rC:'炮',rP:'兵',bK:'将',bA:'士',bB:'象',bN:'馬',bR:'車',bC:'砲',bP:'卒'};
 const VAL={K:10000,R:900,C:450,N:400,B:200,A:200,P:100};
-let bd,turn,sel=null,legal=[],lastMv=null,hist=[],think=false,ended=false,diff=+(localStorage.getItem('xq_diff')||1),cur=[9,4],kb=false,moves=0,msg='',mt=0;const DN=['简单','普通','困难'];
+let bd,turn,sel=null,legal=[],lastMv=null,hist=[],think=false,ended=false,diff=+(localStorage.getItem('xq_diff')||1),cur=[9,4],kb=false,moves=0,msg='',mt=0;const DN=['简单','普通','困难','双人对战'];
 function fit(){Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 function init(){const b=[...Array(10)].map(()=>Array(9).fill(null));const back='RNBAKABNR';for(let c=0;c<9;c++){b[0][c]='b'+back[c];b[9][c]='r'+back[c]}
  b[2][1]=b[2][7]='bC';b[7][1]=b[7][7]='rC';for(let c=0;c<9;c+=2){b[3][c]='bP';b[6][c]='rP'}return b}
@@ -35,13 +35,13 @@ function aiMove(){const ms=order(bd,legalMoves(bd,'b'));if(!ms.length)return nul
 function reset(){bd=init();turn='r';sel=null;legal=[];lastMv=null;hist=[];think=false;ended=false;moves=0;cur=[9,4]}
 function say(s){msg=s;mt=110}
 function doMove(m){hist.push({m,cap:bd[m[2]][m[3]]});const cap=mk(bd,m);lastMv=m;moves++;Hub.sfx(cap?'hit':'click');turn=turn==='r'?'b':'r';
- const lm=legalMoves(bd,turn);if(!lm.length){ended=true;const win=turn==='b';setTimeout(()=>Hub.gameOver(win?Math.max(200,1500-moves*8)*(diff+1):0,win?'绝杀！你胜利了':'被将死，AI 获胜'),800);return}
+ const lm=legalMoves(bd,turn);if(!lm.length){ended=true;const win=turn==='b';setTimeout(()=>diff===3?Hub.gameOver(Math.max(200,1500-moves*8),win?'红方获胜！':'黑方获胜！',true):Hub.gameOver(win?Math.max(200,1500-moves*8)*(diff+1):0,win?'绝杀！你胜利了':'被将死，AI 获胜'),800);return}
  if(inCheck(bd,turn)){say('将军！');Hub.sfx('bad')}}
 function aiTurn(){think=true;Hub.later(300,()=>{const m=aiMove();think=false;if(m)doMove(m)})}
-function click(r,c){if(!Hub.active()||think||ended||turn!=='r')return;const p=bd[r][c];
- if(sel){const m=legal.find(q=>q[2]===r&&q[3]===c);if(m){sel=null;legal=[];doMove(m);if(!ended)aiTurn();return}}
- if(p&&p[0]==='r'){sel=[r,c];legal=legalMoves(bd,'r').filter(m=>m[0]===r&&m[1]===c);Hub.sfx('flip')}else{sel=null;legal=[]}}
-function undo(){if(!Hub.active()||think||ended||hist.length<2)return;for(let i=0;i<2;i++){const h=hist.pop();un(bd,h.m,h.cap)}turn='r';lastMv=hist.length?hist[hist.length-1].m:null;sel=null;legal=[];moves+=4;Hub.sfx('flip')}
+function click(r,c){if(!Hub.active()||think||ended||(diff!==3&&turn!=='r'))return;const p=bd[r][c];
+ if(sel){const m=legal.find(q=>q[2]===r&&q[3]===c);if(m){sel=null;legal=[];doMove(m);if(!ended&&diff!==3)aiTurn();return}}
+ if(p&&p[0]===turn){sel=[r,c];legal=legalMoves(bd,turn).filter(m=>m[0]===r&&m[1]===c);Hub.sfx('flip')}else{sel=null;legal=[]}}
+function undo(){if(diff===3){if(!Hub.active()||ended||!hist.length)return;const h=hist.pop();un(bd,h.m,h.cap);turn=turn==='r'?'b':'r';lastMv=hist.length?hist[hist.length-1].m:null;sel=null;legal=[];Hub.sfx('flip');return}if(!Hub.active()||think||ended||hist.length<2)return;for(let i=0;i<2;i++){const h=hist.pop();un(bd,h.m,h.cap)}turn='r';lastMv=hist.length?hist[hist.length-1].m:null;sel=null;legal=[];moves+=4;Hub.sfx('flip')}
 const P=(r,c)=>[M+c*G,M+r*G];
 const BW=W-12,BH=G*9+M*2-12;const WOOD=(()=>{const c=document.createElement('canvas');c.width=BW;c.height=BH;const w=c.getContext('2d');const g=w.createLinearGradient(0,0,BW,BH);g.addColorStop(0,'#f3cf93');g.addColorStop(.5,'#e6b673');g.addColorStop(1,'#d39a55');w.fillStyle=g;w.fillRect(0,0,BW,BH);for(let i=0;i<110;i++){w.strokeStyle=`rgba(130,70,20,${.04+Math.random()*.08})`;w.lineWidth=.6+Math.random()*1.5;w.beginPath();const y0=Math.random()*BH;w.moveTo(0,y0);for(let xx=0;xx<=BW;xx+=20)w.lineTo(xx,y0+Math.sin(xx/80+i)*7);w.stroke()}return c})();
 function piece(X,Y,p,lift){const red=p[0]==='r',R=G*.44;x.fillStyle='rgba(60,30,0,.35)';x.beginPath();x.ellipse(X+2,Y+4,R,R*.92,0,0,7);x.fill();Y-=lift;
@@ -57,7 +57,7 @@ function draw(){if(!bd)return;const A=Art;x.clearRect(0,0,W,H);x.fillStyle='rgba
  for(let r=0;r<10;r++)for(let c=0;c<9;c++){const p=bd[r][c];if(!p)continue;const[X,Y]=P(r,c),isS=sel&&sel[0]===r&&sel[1]===c;if(isS){x.shadowColor='#ffcf5c';x.shadowBlur=24}piece(X,Y,p,isS?5:0);x.shadowBlur=0}
  legal.forEach(m=>{const[X,Y]=P(m[2],m[3]);if(bd[m[2]][m[3]]){x.strokeStyle='#ff4d6d';x.lineWidth=3;x.beginPath();x.arc(X,Y,G*.47,0,7);x.stroke()}else{x.fillStyle='rgba(30,160,90,.8)';x.beginPath();x.arc(X,Y,7,0,7);x.fill()}});
  if(kb&&Hub.active()){const[X,Y]=P(...cur);x.strokeStyle='#3f5bff';x.lineWidth=2.5;A.rr(x,X-G/2,Y-G/2,G,G,8);x.stroke()}
- A.text(x,mt>0?(mt--,msg):think?'AI 思考中…':'['+DN[diff]+'] '+(turn==='r'?'轮到你（红方）':'')+' · U 悔棋',W/2,H-22,14,'#cfd6ff',{w:600});if(mt>0&&msg==='将军！')A.text(x,'将 军 ！',W/2,H/2-20,48,'#ff4d6d',{glow:'rgba(255,77,109,.6)'})}
+ A.text(x,mt>0?(mt--,msg):think?'AI 思考中…':diff===3?'双人对战 · '+(turn==='r'?'红方走棋':'黑方走棋')+' · U 悔棋':'['+DN[diff]+'] '+(turn==='r'?'轮到你（红方）':'')+' · U 悔棋',W/2,H-22,14,'#cfd6ff',{w:600});if(mt>0&&msg==='将军！')A.text(x,'将 军 ！',W/2,H/2-20,48,'#ff4d6d',{glow:'rgba(255,77,109,.6)'})}
 (function loop(){requestAnimationFrame(loop);draw()})();
 Hub.init({id:'xiangqi',title:'中国象棋',scoreLabel:'积分',help:'你执红先行，与 AI 对弈。点击己方棋子显示可走位置，再点目标落子。完整规则：蹩马腿、塞象眼、炮隔子吃、兵过河可横走、将帅不能照面。困死/将死对方即胜。U 悔棋（扣分）。键盘：方向键 + 空格。<br>选择 AI 难度：',onStart(){reset()}});
 reset();

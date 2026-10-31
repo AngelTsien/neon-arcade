@@ -1,5 +1,5 @@
 const cv=document.getElementById('c'),x=cv.getContext('2d'),W=640,H0=480;let H=H0,GY,Z=1,VW=W,camX=0;
-function fit(){H=Hub.flex(W,H0).H;Z=H>H0*1.25?1.5:1;VW=W/Z;GY=H/Z-50;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
+function fit(){H=Hub.flex(W,H0).H;Z=H>H0*1.25?Math.min(2.3,H/600):1;VW=W/Z;GY=H/Z-50;Hub.fit(cv,W,H)}addEventListener('resize',fit);fit();
 const PS=new Art.Particles(),FL=new Art.Floaters(),G=900;let bodies,birds,bird,drag,level,score,last,settle,ended,trail,SX=110;
 const SY=()=>GY-110;
 function blk(X,Y,w,h,m){return{t:'b',x:X,y:GY-Y-h,w,h,vx:0,vy:0,m:m||'wood',hp:m==='stone'?260:m==='glass'?60:140}}
@@ -18,15 +18,22 @@ function collide(a,b){const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x),oy=Ma
  if(ox<oy){const s=a.x<b.x?-1:1;a.x+=s*ox*ta;b.x-=s*ox*tb;const rv=a.vx-b.vx;if(rv*s<0){hurt(a,Math.abs(rv));hurt(b,Math.abs(rv));const p=rv*(1.3)/(ma+mb);a.vx-=p*mb;b.vx+=p*ma}}
  else{const s=a.y<b.y?-1:1;a.y+=s*oy*ta;b.y-=s*oy*tb;const rv=a.vy-b.vy;if(rv*s<0){if(Math.abs(rv)>120){hurt(a,Math.abs(rv)*.7);hurt(b,Math.abs(rv)*.7)}const p=rv*(1.2)/(ma+mb);a.vy-=p*mb;b.vy+=p*ma;const f=.9;a.vx*=f;b.vx*=f}}}
 function update(dt){if(bird&&bird.st==='ready')bird.rt+=dt;const MX=W-VW;let tx=0;if(bird&&bird.st==='fly')tx=bird.x-VW*.35;else if(bird&&bird.st==='ready'&&!drag&&bird.rt<1.8&&Z>1)tx=bird.rt<.3?camX:MX;else if(!bird||bird.st==='done')tx=MX;tx=Math.max(0,Math.min(MX,tx));camX+=(tx-camX)*Math.min(1,dt*3);const n=3,h=dt/n;for(let s=0;s<n;s++){
- for(const b of bodies){b.vy+=G*h;b.x+=b.vx*h;b.y+=b.vy*h;if(b.y+b.h>GY){if(b.vy>200)hurt(b,b.vy*.5);b.y=GY-b.h;b.vy*=-.2;b.vx*=.85;if(Math.abs(b.vy)<20)b.vy=0}if(b.x<0||b.x>W+40)b.dead=1}
- for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++)collide(bodies[i],bodies[j]);
+ for(const b of bodies){if(b.tip)continue;b.vy+=G*h;b.x+=b.vx*h;b.y+=b.vy*h;if(b.y+b.h>GY){if(b.vy>200)hurt(b,b.vy*.5);b.y=GY-b.h;b.vy*=-.2;b.vx*=.85;if(Math.abs(b.vy)<20)b.vy=0}if(b.x<0||b.x>W+40)b.dead=1}
+ for(let i=0;i<bodies.length;i++)for(let j=i+1;j<bodies.length;j++)if(!bodies[i].tip&&!bodies[j].tip)collide(bodies[i],bodies[j]);
  if(bird&&bird.st==='fly'){bird.vy+=G*h;bird.x+=bird.vx*h;bird.y+=bird.vy*h;const bb={t:'p',x:bird.x-bird.r,y:bird.y-bird.r,w:bird.r*2,h:bird.r*2,vx:bird.vx,vy:bird.vy};
-  for(const b of bodies){const ox=Math.min(bb.x+bb.w,b.x+b.w)-Math.max(bb.x,b.x),oy=Math.min(bb.y+bb.h,b.y+b.h)-Math.max(bb.y,b.y);if(ox>0&&oy>0){const sp=Math.hypot(bird.vx,bird.vy);hurt(b,sp*1.1);const mb=b.m==='stone'?3:b.m==='glass'?.6:1;b.vx+=bird.vx*.8/mb;b.vy+=bird.vy*.4/mb;if(ox<oy){bird.x-=Math.sign(bird.vx)*ox;bird.vx*=-.25}else{bird.y-=Math.sign(bird.vy)*oy;bird.vy*=-.3}bird.vx*=b.dead&&b.m==='glass'?1:.7;if(!bird.hit){bird.hit=1;Hub.tone(140,.12,'triangle',.12)}}}
+  for(const b of bodies){if(b.tip)continue;const ox=Math.min(bb.x+bb.w,b.x+b.w)-Math.max(bb.x,b.x),oy=Math.min(bb.y+bb.h,b.y+b.h)-Math.max(bb.y,b.y);if(ox>0&&oy>0){const sp=Math.hypot(bird.vx,bird.vy);hurt(b,sp*1.1);const mb=b.m==='stone'?3:b.m==='glass'?.6:1;b.vx+=bird.vx*.8/mb;b.vy+=bird.vy*.4/mb;if(ox<oy){bird.x-=Math.sign(bird.vx)*ox;bird.vx*=-.25}else{bird.y-=Math.sign(bird.vy)*oy;bird.vy*=-.3}bird.vx*=b.dead&&b.m==='glass'?1:.7;if(!bird.hit){bird.hit=1;Hub.tone(140,.12,'triangle',.12)}}}
   if(bird.y+bird.r>GY){bird.y=GY-bird.r;bird.vy*=-.35;bird.vx*=.8}trail.push([bird.x,bird.y]);if(trail.length>60)trail.shift()}}
- bodies=bodies.filter(b=>!b.dead);
+ tipStep(dt);bodies=bodies.filter(b=>!b.dead);
  if(bird&&bird.st==='fly'){bird.life+=dt;const slow=Math.hypot(bird.vx,bird.vy)<25&&bird.y+bird.r>=GY-1;if(slow||bird.life>6||bird.x>W+50||bird.x<-50){bird.st='done';Hub.later(700,()=>{if(!ended)nextBird()})}}
  if(!ended&&!pigs().length){ended=true;const bonus=birds*10000+(bird&&bird.st==='ready'?10000:0);score+=bonus;Hub.setScore(score);if(bonus)FL.add('剩余小鸟 +'+bonus,camX+VW/2,GY/2-40,'#ffcf5c');Hub.sfx('win');FL.add('第 '+(level+1)+' 关通关！',camX+VW/2,GY/2,'#4dffc3');Hub.later(1800,()=>{level++;load()})}
  if(!ended&&!bird&&pigs().length){settle+=dt;if(settle>1.5){ended=true;Hub.gameOver(score,'小猪逃过一劫')}}}
+function tipStep(dt){for(const b of bodies){if(b.t!=='b'||b.dead)continue;
+ if(!b.tip&&b.h>b.w*1.6&&Math.abs(b.vx)>30&&Math.abs(b.vy)<60){const dir=Math.sign(b.vx);b.tip={dir,a:0,va:Math.min(4,Math.abs(b.vx)/b.h),px:dir>0?b.x+b.w:b.x,py:b.y+b.h};b.vx=0;b.vy=0;Hub.tone(120,.15,'triangle',.06)}
+ if(!b.tip&&b.w>b.h*1.6&&Math.abs(b.vy)<30&&b.y+b.h<GY-2){const sup=bodies.filter(o=>o!==b&&!o.dead&&!o.tip&&Math.abs(o.y-(b.y+b.h))<3&&o.x<b.x+b.w&&o.x+o.w>b.x);if(sup.length){const lo=Math.min(...sup.map(o=>Math.max(o.x,b.x))),hi=Math.max(...sup.map(o=>Math.min(o.x+o.w,b.x+b.w))),cx=b.x+b.w/2;if(cx<lo-2||cx>hi+2){const dir=cx>hi?1:-1,px=dir>0?hi:lo;b.tip={dir,a:0,va:.3,px,py:b.y+b.h,ox:b.x-px,plank:1}}}}
+ if(!b.tip)continue;const T=b.tip;if(T.plank){T.va+=6*dt;T.a+=T.va*dt;if(T.a>.55){b.x+=T.dir*6;b.y+=Math.abs(Math.sin(T.a))*b.w*.3;b.vx=T.dir*90;b.vy=60;b.tip=null}continue}T.va+=(G/b.h)*1.5*Math.sin(T.a+.12)*dt;T.a+=T.va*dt;
+ const tx=T.px+T.dir*Math.sin(T.a)*b.h,ty=T.py-Math.cos(T.a)*b.h;
+ for(const o of bodies){if(o===b||o.dead||o.tip)continue;if(tx>o.x&&tx<o.x+o.w&&ty>o.y&&ty<o.y+o.h){const sp=T.va*b.h;hurt(o,sp*.9);const m=o.t==='p'?1:o.m==='stone'?3:o.m==='glass'?.6:1.2;o.vx+=T.dir*sp*.6/m;o.vy-=40;T.va*=.6}}
+ if(T.a>=Math.PI/2||ty>GY){const nw=b.h,nh=b.w;b.w=nw;b.h=nh;b.x=T.dir>0?T.px:T.px-nw;b.y=T.py-nh;hurt(b,T.va*b.w*.5);PS.burst(T.dir>0?b.x+b.w:b.x,b.y+b.h,['#c9b08a','#fff'],8,{speed:2});Hub.tone(90,.12,'sine',.1);b.tip=null}}}
 function drawBird(X,Y,r,a){const A=Art;x.save();x.translate(X,Y);x.rotate(a||0);A.orb(x,0,0,r,'#ff3d4d',{shadow:true});x.fillStyle='#ffe0c8';x.beginPath();x.ellipse(2,r*.45,r*.6,r*.4,0,0,7);x.fill();
  x.fillStyle='#fff';x.beginPath();x.arc(r*.25,-r*.15,r*.3,0,7);x.arc(r*.62,-r*.15,r*.26,0,7);x.fill();x.fillStyle='#111';x.beginPath();x.arc(r*.33,-r*.12,r*.12,0,7);x.arc(r*.66,-r*.12,r*.11,0,7);x.fill();
  x.strokeStyle='#3a1010';x.lineWidth=r*.18;x.beginPath();x.moveTo(r*.05,-r*.55);x.lineTo(r*.5,-r*.38);x.lineTo(r*.85,-r*.55);x.stroke();x.fillStyle='#ffb21c';x.beginPath();x.moveTo(r*.45,r*.05);x.lineTo(r*1.15,r*.2);x.lineTo(r*.45,r*.4);x.fill();
@@ -34,7 +41,7 @@ function drawBird(X,Y,r,a){const A=Art;x.save();x.translate(X,Y);x.rotate(a||0);
 function drawPig(b){const A=Art,cx=b.x+b.w/2,cy=b.y+b.h/2,r=b.r;A.orb(x,cx,cy,r,'#6fd24a',{shadow:true});x.fillStyle='#9ae86e';x.beginPath();x.ellipse(cx,cy+r*.15,r*.42,r*.3,0,0,7);x.fill();x.fillStyle='#2f6a1a';x.beginPath();x.arc(cx-r*.15,cy+r*.15,r*.08,0,7);x.arc(cx+r*.15,cy+r*.15,r*.08,0,7);x.fill();
  [-1,1].forEach(s=>{x.fillStyle='#fff';x.beginPath();x.arc(cx+s*r*.42,cy-r*.3,r*.2,0,7);x.fill();x.fillStyle='#111';x.beginPath();x.arc(cx+s*r*.38,cy-r*.28,r*.09,0,7);x.fill();x.fillStyle='#5cbf38';x.beginPath();x.arc(cx+s*r*.62,cy-r*.85,r*.22,0,7);x.fill()});
  if(b.hp<70+r){x.strokeStyle='rgba(40,80,20,.7)';x.lineWidth=1.5;x.beginPath();x.moveTo(cx-r*.6,cy-r*.6);x.lineTo(cx-r*.3,cy-r*.4);x.stroke()}}
-function drawBlk(b){const A=Art,c=b.m==='stone'?'#8e98bc':b.m==='glass'?'#9fdcff':'#d08a4c';x.save();if(b.m==='glass')x.globalAlpha=.75;A.tile(x,b.x,b.y,b.w,b.h,3,c,{depth:2});x.restore();
+function drawBlk(b){if(b.tip){const T=b.tip;x.save();x.translate(T.px,T.py);x.rotate(T.dir*T.a);const ox=T.plank?T.ox:T.dir>0?-b.w:0;const bb={...b,tip:null,x:ox,y:-b.h};drawBlk(bb);x.restore();return}const A=Art,c=b.m==='stone'?'#8e98bc':b.m==='glass'?'#9fdcff':'#d08a4c';x.save();if(b.m==='glass')x.globalAlpha=.75;A.tile(x,b.x,b.y,b.w,b.h,3,c,{depth:2});x.restore();
  if(b.m==='wood'){x.strokeStyle='rgba(110,55,20,.45)';x.lineWidth=1;for(let i=1;i<3;i++){x.beginPath();if(b.w>b.h){x.moveTo(b.x+3,b.y+b.h*i/3);x.lineTo(b.x+b.w-3,b.y+b.h*i/3)}else{x.moveTo(b.x+b.w*i/3,b.y+3);x.lineTo(b.x+b.w*i/3,b.y+b.h-3)}x.stroke()}}
  const full=b.m==='stone'?260:b.m==='glass'?60:140;if(b.hp<full*.6){x.strokeStyle='rgba(0,0,0,.45)';x.lineWidth=1.3;x.beginPath();x.moveTo(b.x+b.w*.3,b.y+2);x.lineTo(b.x+b.w*.55,b.y+b.h*.5);x.lineTo(b.x+b.w*.4,b.y+b.h-2);x.stroke()}}
 function draw(){const A=Art,tm=performance.now();x.save();x.scale(Z,Z);x.translate(-camX,0);const H=GY+50;const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1a1c4a');g.addColorStop(.6,'#3a2d7a');g.addColorStop(1,'#ff8a6a');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -51,7 +58,7 @@ function draw(){const A=Art,tm=performance.now();x.save();x.scale(Z,Z);x.transla
  if(bird&&bird.st!=='done')drawBird(bird.x,bird.y,bird.r,bird.st==='fly'?Math.atan2(bird.vy,bird.vx)*.5:0);
  x.strokeStyle='#3a1a0a';x.lineWidth=5;x.beginPath();x.moveTo(SX+17,SY()-18);x.lineTo(bx,by);x.stroke();
  for(let i=0;i<birds;i++)drawBird(SX-50-i*30,GY-12,11,0);
- PS.draw(x);FL.draw(x);x.restore();A.panel(x,12,12,W-24,52,16);A.text(x,'第 '+(level+1)+' 关',30,38,16,'#fff',{align:'left'});A.text(x,'小猪 ×'+pigs().length,W/2,38,15,'#7ee05a',{w:800});A.text(x,'小鸟 ×'+(birds+(bird&&bird.st==='ready'?1:0)),W-30,38,15,'#ff8a8a',{align:'right',w:800});
+ PS.draw(x);FL.draw(x);x.restore();{const k=Z>1?1.6:1;A.panel(x,12,12,W-24,52*k,16);A.text(x,'第 '+(level+1)+' 关',30,12+26*k,16*k,'#fff',{align:'left'});A.text(x,'小猪 ×'+pigs().length,W/2,12+26*k,15*k,'#7ee05a',{w:800});A.text(x,'小鸟 ×'+(birds+(bird&&bird.st==='ready'?1:0)),W-30,12+26*k,15*k,'#ff8a8a',{align:'right',w:800})}
  if(bird&&bird.st==='ready'&&!drag&&!(score>0)){A.text(x,'按住小鸟向后拖动，松手发射',W/2,Z>1?150:104,Z>1?22:15,'rgba(255,255,255,.85)',{w:700})}
 }
 function loop(t){requestAnimationFrame(loop);const dt=Math.min(.033,(t-last)/1000);last=t;if(Hub.active())update(dt);draw()}

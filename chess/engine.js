@@ -48,4 +48,4 @@ function best(s,lvl){const ms=order(legal(s));if(!ms.length)return null;const cf
  for(let d=1;d<=cfg.d;d++){let a=-1e9,bm=null;const local=[];for(const m of ms){make(s,m);const v=-ab(s,d-1,-1e9,-a,1)+(cfg.rnd?Math.random()*cfg.rnd:0);unmake(s);if(stop)break;local.push([m,v]);if(v>a){a=v;bm=m}}
   if(stop&&d>1)break;if(bm){bestM=bm;ms.sort((x,y)=>(m2=>m2)(0));ms.splice(ms.indexOf(bm),1);ms.unshift(bm)}}
  while(s.hist.length>save)unmake(s);return bestM}
-return{init,legal,make,unmake,inCheck,key,insufficient,best,col,isW}})();
+return{evalS,init,legal,make,unmake,inCheck,key,insufficient,best,col,isW}})();
