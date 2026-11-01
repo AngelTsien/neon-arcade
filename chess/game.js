@@ -60,7 +60,7 @@ function draw(){const A=Art,tm=performance.now();A.bg(x,W,H,tm,{stars:30,key:'ch
   if(!show.length)A.text(x,'棋谱将在这里显示',W/2,py+102+(ph-160)/2,12,'#6a7098',{w:600});show.forEach((r,i)=>{const col=i%2,row=i>>1;A.text(x,r,40+col*(W-80)/2,py+118+row*18,12,i===show.length-1?'#ffcf5c':'#e6eaff',{align:'left',w:600,shadow:false})})}
  BTN().forEach(([l,X,w])=>{x.fillStyle='rgba(255,255,255,.1)';A.rr(x,X,py+ph-48,w,36,18);x.fill();A.text(x,l,X+w/2,py+ph-30,13,'#fff',{w:800,shadow:false})});
  if(msgT>0){A.panel(x,W/2-80,BY+BW/2-28,160,56,18);A.text(x,msg,W/2,BY+BW/2,24,'#ff4d6d',{w:900})}
- if(promo){x.fillStyle='rgba(8,10,30,.7)';x.fillRect(BX,BY,BW,BW);A.panel(x,W/2-150,BY+BW/2-60,300,120,20);A.text(x,'选择升变棋子',W/2,BY+BW/2-38,15,'#fff');'QRBN'.forEach((q,i)=>{const X=W/2-120+i*62;x.fillStyle='rgba(255,255,255,.1)';A.rr(x,X,BY+BW/2-20,54,62,12);x.fill();piece(q,X+27,BY+BW/2+12,54,true)})}
+ if(promo){x.fillStyle='rgba(8,10,30,.7)';x.fillRect(BX,BY,BW,BW);A.panel(x,W/2-150,BY+BW/2-60,300,120,20);A.text(x,'选择升变棋子',W/2,BY+BW/2-38,15,'#fff');[...'QRBN'].forEach((q,i)=>{const X=W/2-120+i*62;x.fillStyle='rgba(255,255,255,.1)';A.rr(x,X,BY+BW/2-20,54,62,12);x.fill();piece(q,X+27,BY+BW/2+12,54,true)})}
  PS.draw(x);FL.draw(x)}
 let last=performance.now();function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000);last=t;if(Hub.active())update(dt);draw()}
 Hub.init({duo:()=>pc==='h',id:'chess',title:'国际象棋',help:'完整国际象棋规则：王车易位、吃过路兵、兵升变（可选后/车/象/马）、将军/将死/逼和，以及五十回合、三次重复局面和子力不足和棋。你执白先行，点击棋子查看可走位置（圆点），再点击目标格。顶部切换 AI 难度（入门/进阶/大师，α-β 搜索）。可悔棋。键盘：方向键移动光标，空格/回车选择，U 悔棋。胜利得分随难度提高。',onStart(){reset()},onResume(){last=performance.now()}});
