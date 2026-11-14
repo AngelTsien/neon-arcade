@@ -61,3 +61,72 @@ body.toon .ex-stats div:nth-child(odd){transform:rotate(-2deg)}body.toon .ex-sta
 body.toon .hud .btn,body.toon .stat{background:#fff6dc;color:#2a1810;border:2.5px solid #2a1810;box-shadow:2px 2px 0 #2a1810}
 body.toon .stat b{color:#e8452c}
 body.toon .ov canvas.ex-pose{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important}
+
+/* —— 纸雕 / 粉笔 / 水墨 / 浮世绘：各游戏结果与界面皮肤（避免统一霓虹紫模板） —— */
+body.paper{--ink:#3a2a22;--dim:#7a5a4a}
+body.paper .ov{background:linear-gradient(180deg,#f3d7c6 0%,#e7f0f7 45%,#cfe0f0 100%);backdrop-filter:none;-webkit-backdrop-filter:none}
+body.paper .ov::before{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 28px,rgba(80,40,20,.03) 28px 29px),repeating-linear-gradient(0deg,transparent 0 28px,rgba(80,40,20,.03) 28px 29px);opacity:.7}
+body.paper .ov>*{position:relative}
+body.paper .ov h1{background:none;color:#c23b4a;-webkit-text-fill-color:#c23b4a;filter:none;text-shadow:6px 6px 0 rgba(40,20,10,.18);letter-spacing:1px;font-family:"Nunito","PingFang SC",system-ui,sans-serif}
+body.paper .ov p,body.paper .ov .sc{background:#fff8ef;color:#3a2a22;border:none;border-radius:6px;box-shadow:8px 8px 0 rgba(40,30,20,.18);font-weight:700}
+body.paper .ov .sc b{color:#c23b4a;text-shadow:none;font-size:52px}
+body.paper .btn{background:#fff8ef;color:#3a2a22;border:none;border-radius:8px;box-shadow:4px 4px 0 rgba(40,30,20,.2);backdrop-filter:none;-webkit-backdrop-filter:none;font-weight:800}
+body.paper .btn.big{background:#ee6b6b;color:#fff8ef;box-shadow:5px 5px 0 rgba(120,30,30,.28)}
+body.paper .btn.on{background:#f2c14e!important;color:#3a2a22!important}
+body.paper .newbest{background:#f2c14e;color:#3a2a22;box-shadow:4px 4px 0 rgba(40,30,20,.2);border-radius:8px}
+body.paper .hud .btn,body.paper .stat{background:#fff8ef;color:#3a2a22;border:none;box-shadow:3px 3px 0 rgba(40,30,20,.16)}
+body.paper .stat b{color:#c23b4a}
+body.paper .ex-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+body.paper .ex-stats div{background:#fff8ef;box-shadow:5px 5px 0 rgba(40,30,20,.16);border-radius:8px;padding:8px 14px;color:#3a2a22;min-width:90px}
+body.paper .ex-stats span{display:block;font-size:12px;color:#7a5a4a}body.paper .ex-stats b{font-size:24px;color:#c23b4a}
+
+body.chalkbd{--ink:#f3efe0;--dim:#c9d6b8}
+body.chalkbd .ov{background:radial-gradient(ellipse at 50% 40%,#2a5a3e,#163326 70%,#0e2218);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:inset 0 0 0 18px #6a4a2a,inset 0 0 0 22px #3a2814}
+body.chalkbd .ov::before{content:'';position:fixed;inset:22px;pointer-events:none;opacity:.18;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' /%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+body.chalkbd .ov>*{position:relative}
+body.chalkbd .ov h1{background:none;color:#f4f0dc;-webkit-text-fill-color:#f4f0dc;filter:none;text-shadow:0 0 2px #fff,2px 3px 0 #0a1a10;letter-spacing:3px;font-family:"Chalkboard SE","Comic Sans MS","KaiTi","STKaiti",cursive;font-weight:700}
+body.chalkbd .ov p,body.chalkbd .ov .sc{background:transparent;color:#d6e8c8;border:2px dashed rgba(255,240,180,.35);border-radius:0;box-shadow:none;font-family:"Chalkboard SE","Comic Sans MS","KaiTi",cursive}
+body.chalkbd .ov .sc b{color:#ffe56a;text-shadow:0 0 8px rgba(255,220,80,.4);font-size:52px;font-family:"Chalkboard SE","Comic Sans MS",cursive}
+body.chalkbd .btn{background:transparent;color:#f4f0dc;border:2px solid #f4f0dc;border-radius:4px;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:"Chalkboard SE","Comic Sans MS","KaiTi",cursive;font-weight:700}
+body.chalkbd .btn.big{background:#ffe56a;color:#163326;border-color:#ffe56a}
+body.chalkbd .btn.on{background:#8fd3ff!important;color:#163326!important;border-color:#8fd3ff!important}
+body.chalkbd .newbest{background:transparent;color:#ffe56a;box-shadow:none;font-family:"Chalkboard SE","Comic Sans MS",cursive}
+body.chalkbd .hud .btn,body.chalkbd .stat{background:#1a3a28;color:#f4f0dc;border:1.5px solid #f4c84a;box-shadow:none;border-radius:4px}
+body.chalkbd .stat b{color:#ffe56a}
+body.chalkbd .ex-stats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+body.chalkbd .ex-stats div{border:2px dashed rgba(255,240,180,.4);padding:8px 14px;color:#f4f0dc;min-width:90px;font-family:"Chalkboard SE","Comic Sans MS",cursive}
+body.chalkbd .ex-stats span{display:block;font-size:12px;color:#c9d6b8}body.chalkbd .ex-stats b{font-size:24px;color:#ffe56a}
+
+body.inkwash{--ink:#1a1612;--dim:#5a4a3a}
+body.inkwash .ov{background:radial-gradient(ellipse at 50% 0%,#f6edd4,#e6d5b0 55%,#d4c09a);backdrop-filter:none;-webkit-backdrop-filter:none}
+body.inkwash .ov::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 24%,rgba(30,30,30,.07),transparent 28%),radial-gradient(circle at 80% 70%,rgba(160,40,30,.08),transparent 30%)}
+body.inkwash .ov>*{position:relative}
+body.inkwash .ov h1{background:none;color:#1a1612;-webkit-text-fill-color:#1a1612;filter:none;text-shadow:none;letter-spacing:8px;font-family:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;font-weight:700}
+body.inkwash .ov p,body.inkwash .ov .sc{background:rgba(255,248,230,.55);color:#1a1612;border:1px solid rgba(80,40,20,.2);border-radius:2px;box-shadow:0 1px 0 rgba(255,255,255,.6);font-family:"Songti SC","STSong","SimSun",serif}
+body.inkwash .ov .sc b{color:#a4281c;text-shadow:none;font-size:52px}
+body.inkwash .btn{background:#f6edd4;color:#1a1612;border:1px solid #1a1612;border-radius:2px;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;font-family:"Songti SC","STSong","SimSun",serif;font-weight:700;letter-spacing:3px}
+body.inkwash .btn.big{background:#a4281c;color:#f6edd4;border-color:#6a1810}
+body.inkwash .btn.on{background:#1a1612!important;color:#f6edd4!important}
+body.inkwash .newbest{background:#a4281c;color:#f6edd4;border-radius:2px;box-shadow:none;letter-spacing:4px}
+body.inkwash .hud .btn,body.inkwash .stat{background:#f6edd4;color:#1a1612;border:1px solid rgba(26,22,18,.45);box-shadow:none;border-radius:2px}
+body.inkwash .stat b{color:#a4281c}
+body.inkwash .ex-stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+body.inkwash .ex-stats div{border:1px solid rgba(26,22,18,.35);padding:8px 16px;color:#1a1612;min-width:90px;background:rgba(255,248,230,.5)}
+body.inkwash .ex-stats span{display:block;font-size:12px;letter-spacing:3px}body.inkwash .ex-stats b{font-size:24px;color:#a4281c}
+
+body.ukiyo{--ink:#1a1410;--dim:#5a4030}
+body.ukiyo .ov{background:linear-gradient(180deg,#ead9b8 0%,#d9c49a 40%,#0b3a5b 40.2%,#0b3a5b 100%);backdrop-filter:none;-webkit-backdrop-filter:none}
+body.ukiyo .ov::before{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 3px,rgba(10,20,30,.05) 3px 4px);mix-blend-mode:multiply}
+body.ukiyo .ov>*{position:relative}
+body.ukiyo .ov h1{background:#c23b22;color:#ead9b8;-webkit-text-fill-color:#ead9b8;filter:none;text-shadow:none;letter-spacing:4px;font-family:"Songti SC","STSong","Noto Serif CJK SC","Times New Roman",serif;padding:8px 22px;border:3px solid #1a1410;box-shadow:4px 4px 0 #1a1410;display:inline-block}
+body.ukiyo .ov p,body.ukiyo .ov .sc{background:#ead9b8;color:#1a1410;border:3px solid #1a1410;border-radius:0;box-shadow:4px 4px 0 #1a1410;font-family:"Songti SC","STSong",serif}
+body.ukiyo .ov .sc b{color:#c23b22;text-shadow:none;font-size:52px}
+body.ukiyo .btn{background:#ead9b8;color:#1a1410;border:3px solid #1a1410;border-radius:0;box-shadow:3px 3px 0 #1a1410;backdrop-filter:none;-webkit-backdrop-filter:none;font-weight:800}
+body.ukiyo .btn.big{background:#c23b22;color:#ead9b8}
+body.ukiyo .btn.on{background:#0b3a5b!important;color:#ead9b8!important}
+body.ukiyo .newbest{background:#c23b22;color:#ead9b8;border-radius:0;box-shadow:3px 3px 0 #1a1410}
+body.ukiyo .hud .btn,body.ukiyo .stat{background:#ead9b8;color:#1a1410;border:2px solid #1a1410;box-shadow:2px 2px 0 #1a1410;border-radius:0}
+body.ukiyo .stat b{color:#c23b22}
+body.ukiyo .ex-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+body.ukiyo .ex-stats div{background:#ead9b8;border:3px solid #1a1410;box-shadow:3px 3px 0 #1a1410;padding:8px 14px;color:#1a1410;min-width:90px}
+body.ukiyo .ex-stats span{display:block;font-size:12px}body.ukiyo .ex-stats b{font-size:24px;color:#c23b22}
